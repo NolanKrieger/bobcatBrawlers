@@ -1,13 +1,13 @@
 package Maps;
 
-import Enemies.BugEnemy;
-import Enemies.DinosaurEnemy;
+// import Enemies.BugEnemy;
+// import Enemies.DinosaurEnemy;
 import Engine.ImageLoader;
 import EnhancedMapTiles.EndLevelBox;
 import EnhancedMapTiles.HorizontalMovingPlatform;
 import GameObject.Rectangle;
 import Level.*;
-import NPCs.Walrus;
+// import NPCs.Walrus;
 import Tilesets.CommonTileset;
 import Utils.Direction;
 
@@ -21,18 +21,18 @@ public class TestMap extends Map {
         this.playerStartPosition = getMapTile(2, 11).getLocation();
     }
 
-    @Override
-    public ArrayList<Enemy> loadEnemies() {
-        ArrayList<Enemy> enemies = new ArrayList<>();
+    // @Override
+    // public ArrayList<Enemy> loadEnemies() {
+    //     ArrayList<Enemy> enemies = new ArrayList<>();
 
-        BugEnemy bugEnemy = new BugEnemy(getMapTile(16, 10).getLocation().subtractY(25), Direction.LEFT);
-        enemies.add(bugEnemy);
+    //     BugEnemy bugEnemy = new BugEnemy(getMapTile(16, 10).getLocation().subtractY(25), Direction.LEFT);
+    //     enemies.add(bugEnemy);
 
-        DinosaurEnemy dinosaurEnemy = new DinosaurEnemy(getMapTile(19, 1).getLocation().addY(2), getMapTile(22, 1).getLocation().addY(2), Direction.RIGHT);
-        enemies.add(dinosaurEnemy);
+    //     DinosaurEnemy dinosaurEnemy = new DinosaurEnemy(getMapTile(19, 1).getLocation().addY(2), getMapTile(22, 1).getLocation().addY(2), Direction.RIGHT);
+    //     enemies.add(dinosaurEnemy);
 
-        return enemies;
-    }
+    //     return enemies;
+    // }
 
     @Override
     public ArrayList<EnhancedMapTile> loadEnhancedMapTiles() {
@@ -55,13 +55,13 @@ public class TestMap extends Map {
         return enhancedMapTiles;
     }
 
-    @Override
-    public ArrayList<NPC> loadNPCs() {
-        ArrayList<NPC> npcs = new ArrayList<>();
+    // @Override
+    // public ArrayList<NPC> loadNPCs() {
+    //     ArrayList<NPC> npcs = new ArrayList<>();
 
-        Walrus walrus = new Walrus(getMapTile(30, 10).getLocation().subtractY(13));
-        npcs.add(walrus);
+    //     Walrus walrus = new Walrus(getMapTile(30, 10).getLocation().subtractY(13));
+    //     npcs.add(walrus);
 
-        return npcs;
-    }
+    //     return npcs;
+    // }
 }
