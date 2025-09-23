@@ -1,5 +1,6 @@
 package Level;
 
+import Engine.GraphicsHandler;
 import Engine.Key;
 import Engine.KeyLocker;
 import Engine.Keyboard;
@@ -8,6 +9,7 @@ import GameObject.SpriteSheet;
 import Utils.AirGroundState;
 import Utils.Direction;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
 public abstract class Player extends GameObject {
@@ -395,11 +397,10 @@ public abstract class Player extends GameObject {
         listeners.add(listener);
     }
 
-    // Uncomment this to have game draw player's bounds to make it easier to visualize
-    /*
+    
     public void draw(GraphicsHandler graphicsHandler) {
         super.draw(graphicsHandler);
-        drawBounds(graphicsHandler, new Color(255, 0, 0, 100));
+        drawBounds(graphicsHandler, new Color(0, 255, 0, 100));
     }
-    */
+    
 }
