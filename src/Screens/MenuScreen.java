@@ -12,11 +12,14 @@ import java.awt.*;
 // This is the class for the main menu screen
 public class MenuScreen extends Screen {
     protected ScreenCoordinator screenCoordinator;
-    protected int currentMenuItemHovered = 0; // current menu item being "hovered" over
+    protected int currentMenuItemHovered = 0; // 0..3
     protected int menuItemSelected = -1;
+
     protected SpriteFont playGame;
-    protected SpriteFont tutorial;   // New tutorial option
+    protected SpriteFont tutorial;
+    protected SpriteFont characterSelect;   // NEW
     protected SpriteFont credits;
+
     protected Map background;
     protected int keyPressTimer;
     protected int pointerLocationX, pointerLocationY;
@@ -32,11 +35,17 @@ public class MenuScreen extends Screen {
         playGame.setOutlineColor(Color.black);
         playGame.setOutlineThickness(3);
 
-        tutorial = new SpriteFont("TUTORIAL", 200, 223, "Arial", 30, new Color(49, 207, 240)); // Added the tutorial option to the main menu.
+        tutorial = new SpriteFont("TUTORIAL", 200, 223, "Arial", 30, new Color(49, 207, 240));
         tutorial.setOutlineColor(Color.black);
         tutorial.setOutlineThickness(3);
 
-        credits = new SpriteFont("CREDITS", 200, 323, "Arial", 30, new Color(49, 207, 240));
+        // NEW: Character Select sits below Tutorial
+        characterSelect = new SpriteFont("CHARACTER SELECT", 200, 323, "Arial", 30, new Color(49, 207, 240));
+        characterSelect.setOutlineColor(Color.black);
+        characterSelect.setOutlineThickness(3);
+
+        // Move credits one slot down
+        credits = new SpriteFont("CREDITS", 200, 423, "Arial", 30, new Color(49, 207, 240));
         credits.setOutlineColor(Color.black);
         credits.setOutlineThickness(3);
 
@@ -62,32 +71,38 @@ public class MenuScreen extends Screen {
             if (keyPressTimer > 0) keyPressTimer--;
         }
 
-        // loop selection (now 3 items: 0..2)
-        if (currentMenuItemHovered > 2) {
+        // loop selection (now 4 items: 0..3)
+        if (currentMenuItemHovered > 3) {
             currentMenuItemHovered = 0;
         } else if (currentMenuItemHovered < 0) {
-            currentMenuItemHovered = 2;
+            currentMenuItemHovered = 3;
         }
 
         // set colors and pointer position
         if (currentMenuItemHovered == 0) {
             playGame.setColor(new Color(255, 215, 0));
             tutorial.setColor(new Color(49, 207, 240));
+            characterSelect.setColor(new Color(49, 207, 240));
             credits.setColor(new Color(49, 207, 240));
-            pointerLocationX = 170;
-            pointerLocationY = 130;
+            pointerLocationX = 170; pointerLocationY = 130;
         } else if (currentMenuItemHovered == 1) {
             playGame.setColor(new Color(49, 207, 240));
             tutorial.setColor(new Color(255, 215, 0));
+            characterSelect.setColor(new Color(49, 207, 240));
             credits.setColor(new Color(49, 207, 240));
-            pointerLocationX = 170;
-            pointerLocationY = 230;
-        } else { // currentMenuItemHovered == 2
+            pointerLocationX = 170; pointerLocationY = 230;
+        } else if (currentMenuItemHovered == 2) {
             playGame.setColor(new Color(49, 207, 240));
             tutorial.setColor(new Color(49, 207, 240));
+            characterSelect.setColor(new Color(255, 215, 0));
+            credits.setColor(new Color(49, 207, 240));
+            pointerLocationX = 170; pointerLocationY = 330;
+        } else { // currentMenuItemHovered == 3
+            playGame.setColor(new Color(49, 207, 240));
+            tutorial.setColor(new Color(49, 207, 240));
+            characterSelect.setColor(new Color(49, 207, 240));
             credits.setColor(new Color(255, 215, 0));
-            pointerLocationX = 170;
-            pointerLocationY = 330;
+            pointerLocationX = 170; pointerLocationY = 430;
         }
 
         // selection
@@ -99,8 +114,10 @@ public class MenuScreen extends Screen {
             if (menuItemSelected == 0) {
                 screenCoordinator.setGameState(GameState.LEVEL);
             } else if (menuItemSelected == 1) {
-                screenCoordinator.setGameState(GameState.TUTORIAL); // NEW route
+                screenCoordinator.setGameState(GameState.TUTORIAL);
             } else if (menuItemSelected == 2) {
+                screenCoordinator.setGameState(GameState.CHARACTER_SELECT);
+            } else if (menuItemSelected == 3) {
                 screenCoordinator.setGameState(GameState.CREDITS);
             }
         }
@@ -109,7 +126,8 @@ public class MenuScreen extends Screen {
     public void draw(GraphicsHandler graphicsHandler) {
         background.draw(graphicsHandler);
         playGame.draw(graphicsHandler);
-        tutorial.draw(graphicsHandler);  // NEW
+        tutorial.draw(graphicsHandler);
+        characterSelect.draw(graphicsHandler); // NEW
         credits.draw(graphicsHandler);
         graphicsHandler.drawFilledRectangleWithBorder(
                 pointerLocationX, pointerLocationY, 20, 20,
