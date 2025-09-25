@@ -4,6 +4,7 @@ import Engine.GraphicsHandler;
 import Engine.Key;
 import Engine.KeyLocker;
 import Engine.Keyboard;
+import Game.GameState;
 import GameObject.GameObject;
 import GameObject.SpriteSheet;
 import Utils.AirGroundState;
@@ -36,7 +37,7 @@ public abstract class Player extends GameObject {
     protected AirGroundState previousAirGroundState;
     protected LevelState levelState;
 
-    // classes that listen to player events can be added to this list
+   
     protected ArrayList<PlayerListener> listeners = new ArrayList<>();
 
     // define keys
@@ -63,6 +64,8 @@ public abstract class Player extends GameObject {
         moveAmountX = 0;
         moveAmountY = 0;
 
+        
+
         // if player is currently playing through level (has not won or lost)
         if (levelState == LevelState.RUNNING) {
             applyGravity();
@@ -83,9 +86,22 @@ public abstract class Player extends GameObject {
 
             updateLockedKeys();
 
+            if (this.getY() > map.getEndBoundY()) {
+            if (levelState != LevelState.PLAYER_DEAD) {
+                this.levelState = LevelState.PLAYER_DEAD;
+                System.out.println("Player has died by falling out of the level.");
+                
+                for (PlayerListener listener : listeners) {
+                    listener.onDeath();
+                    updatePlayerDead();
+                }
+            }
+        }
             // update player's animation
             super.update();
         }
+
+        
 
         // if player has beaten level
         else if (levelState == LevelState.LEVEL_COMPLETED) {

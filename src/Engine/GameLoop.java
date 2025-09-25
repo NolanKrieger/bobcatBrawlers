@@ -104,6 +104,7 @@ public class GameLoop {
                         frames = 0;
                         lastSecondTime = thisSecond;
                     }
+                    
 
                     // Yield until it has been at least the target time between renders. This saves the CPU from hogging.
                     while (now - lastRenderTime < TARGET_TIME_BETWEEN_RENDERS && now - lastUpdateTime < TIME_BETWEEN_UPDATES) {

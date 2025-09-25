@@ -48,6 +48,8 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
             case RUNNING:
                 player.update();
                 map.update(player);
+
+                
                 break;
             // if level has been completed, bring up level cleared screen
             case LEVEL_COMPLETED:

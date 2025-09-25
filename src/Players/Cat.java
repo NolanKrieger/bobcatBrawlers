@@ -24,6 +24,8 @@ public class Cat extends Player {
         momentumYIncrease = .5f;
     }
 
+    
+
     public void update() {
         super.update();
     }
