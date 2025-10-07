@@ -6,9 +6,13 @@ import Game.GameState;
 import Game.ScreenCoordinator;
 import Level.Map;
 import Level.Player;
+import Level.Player2;
 import Level.PlayerListener;
 import Maps.TestMap;
 import Players.Cat;
+import Players.Cat2;
+import Engine.Key;
+
 import Utils.Point;
 
 // This class is for when the platformer game is actually being played
@@ -16,6 +20,8 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     protected ScreenCoordinator screenCoordinator;
     protected Map map;
     protected Player player;
+    protected Player2 player2;
+
     protected PlayLevelScreenState playLevelScreenState;
     protected int screenTimer;
     protected LevelClearedScreen levelClearedScreen;
@@ -35,6 +41,10 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         this.player.setMap(map);
         this.player.addListener(this);
 
+        this.player2 = new Cat2(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y);
+        this.player2.setMap(map);
+        this.player2.addListener(this);
+
         levelClearedScreen = new LevelClearedScreen();
         levelLoseScreen = new LevelLoseScreen(this);
 
@@ -47,7 +57,9 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
             // if level is "running" update player and map to keep game logic for the platformer level going
             case RUNNING:
                 player.update();
+                player2.update();
                 map.update(player);
+
 
                 
                 break;
@@ -77,6 +89,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
             case RUNNING:
                 map.draw(graphicsHandler);
                 player.draw(graphicsHandler);
+                player2.draw(graphicsHandler);
                 break;
             case LEVEL_COMPLETED:
                 levelClearedScreen.draw(graphicsHandler);
