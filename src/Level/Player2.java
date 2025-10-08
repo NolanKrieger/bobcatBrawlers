@@ -42,10 +42,10 @@ public abstract class Player2 extends GameObject {
 
     // define keys
     protected KeyLocker keyLocker = new KeyLocker();
-    protected Key JUMP_KEY = Key.W;
-    protected Key MOVE_LEFT_KEY = Key.A;
-    protected Key MOVE_RIGHT_KEY = Key.D;
-    protected Key CROUCH_KEY = Key.S;
+    protected Key JUMP_KEY = Key.UP;
+    protected Key MOVE_LEFT_KEY = Key.LEFT;
+    protected Key MOVE_RIGHT_KEY = Key.RIGHT;
+    protected Key CROUCH_KEY = Key.DOWN;
 
 
     // flags
