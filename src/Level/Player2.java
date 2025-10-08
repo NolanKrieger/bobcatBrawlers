@@ -414,6 +414,11 @@ public abstract class Player2 extends GameObject {
         listeners.add(listener);
     }
 
+    // 👇 ADDED: expose whether Player2 is currently in the JUMPING state
+    public boolean isJumpingState() {
+        return playerState == PlayerState.JUMPING;
+    }
+
     
     public void draw(GraphicsHandler graphicsHandler) {
         super.draw(graphicsHandler);

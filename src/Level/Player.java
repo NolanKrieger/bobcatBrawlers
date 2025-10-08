@@ -421,4 +421,8 @@ public abstract class Player extends GameObject {
         drawBounds(graphicsHandler, new Color(0, 255, 0, 100));
     }
     
+    // Expose whether the player is currently in the JUMPING state
+    public boolean isJumpingState() {
+        return playerState == PlayerState.JUMPING;
+    }
 }
