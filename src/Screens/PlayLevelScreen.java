@@ -41,7 +41,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         this.player.setMap(map);
         this.player.addListener(this);
 
-        this.player2 = new Cat2(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y);
+        this.player2 = new Cat2(map.getPlayerStartPosition().x-50, map.getPlayerStartPosition().y);
         this.player2.setMap(map);
         this.player2.addListener(this);
 
