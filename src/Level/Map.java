@@ -151,6 +151,7 @@ public abstract class Map {
     // creates an empty map file for this map if one does not exist
     // defaults the map dimensions to 0x0
     private void createEmptyMapFile() throws IOException {
+
         // Ensure the map files directory exists (handles different working directories when launched)
         java.io.File outFile = new java.io.File(Config.MAP_FILES_PATH + this.mapFileName);
         java.io.File parent = outFile.getParentFile();
@@ -164,6 +165,7 @@ public abstract class Map {
         try (FileWriter fileWriter = new FileWriter(outFile)) {
             fileWriter.write("0 0\n");
         }
+
     }
 
     // gets player start position based on player start tile (basically the start tile's position on the map)

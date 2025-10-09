@@ -11,9 +11,11 @@ public class EditorMaps {
         return new ArrayList<String>() {{
             add("TestMap");
             add("TitleScreen");
+
             add("BobcatMap");
             add("CCEMap"); 
             add("QuadMap");
+
         }};
     }
 
@@ -23,12 +25,14 @@ public class EditorMaps {
                 return new TestMap();
             case "TitleScreen":
                 return new TitleScreenMap();
+
             case "BobcatMap":
                 return new Maps.BobcatMap();
             case "CCEMap":
                 return new Maps.CCEMap();
             case "QuadMap":
                 return new Maps.QuadMap();
+
             default:
                 throw new RuntimeException("Unrecognized map name");
         }

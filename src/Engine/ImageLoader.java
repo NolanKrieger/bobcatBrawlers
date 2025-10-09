@@ -19,31 +19,9 @@ public class ImageLoader {
     // loads an image and allows the transparent color to be specified
     public static BufferedImage load(String imageFileName, Color transparentColor) {
         try {
-            // Primary: path relative to working directory using Config.RESOURCES_PATH
-            File primary = new File(Config.RESOURCES_PATH + imageFileName);
-            BufferedImage initialImage = null;
 
-            if (primary.exists()) {
-                initialImage = ImageIO.read(primary);
-            } else {
-                // Secondary: some users run the program from the repository root where resources may be under the project folder
-                File alt = new File("bobcatBrawlers/" + Config.RESOURCES_PATH + imageFileName);
-                if (alt.exists()) {
-                    initialImage = ImageIO.read(alt);
-                } else {
-                    // Tertiary: try loading from the classpath (e.g., inside the jar or resources folder on classpath)
-                    try {
-                        java.net.URL resource = Thread.currentThread().getContextClassLoader().getResource(Config.RESOURCES_PATH + imageFileName);
-                        if (resource != null) initialImage = ImageIO.read(resource);
-                    } catch (Exception ex) {
-                        // ignore here, handled below
-                    }
-                }
-            }
+            BufferedImage initialImage = ImageIO.read(new File(Config.RESOURCES_PATH + imageFileName));
 
-            if (initialImage == null) {
-                throw new IOException("Image file not found in any known location");
-            }
             return ImageUtils.transformColorToTransparency(initialImage, transparentColor);
         } catch (IOException e) {
             System.out.println("Unable to find file " + Config.RESOURCES_PATH + imageFileName);

@@ -3,6 +3,7 @@ package Engine;
 import Utils.Colors;
 
 import java.awt.*;
+
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -24,6 +25,7 @@ public class Config {
     public static final String RESOURCES_PATH;
     public static final String MAP_FILES_PATH;
 
+
     public static final int GAME_WINDOW_WIDTH = 800;
     public static final int GAME_WINDOW_HEIGHT = 605;
     public static final Color TRANSPARENT_COLOR = Colors.MAGENTA;
@@ -31,6 +33,7 @@ public class Config {
     // POWER_SAVER does not hog CPU as much, but can potentially stutter/lag on lower end computers if they cannot handle reaching the target FPS
     // MAX_PERFORMANCE will have the game do whatever it takes to reach the target FPS, even if that means hogging the CPU
     public static final GameLoopType GAME_LOOP_TYPE = GameLoopType.POWER_SAVER;
+
 
     static {
         // Try a sequence of likely locations and pick the first that exists.
@@ -110,6 +113,7 @@ public class Config {
         RESOURCES_PATH = resolvedResources;
         MAP_FILES_PATH = resolvedMapFiles;
     }
+
 
     // prevents Config from being instantiated
     private Config() { }
