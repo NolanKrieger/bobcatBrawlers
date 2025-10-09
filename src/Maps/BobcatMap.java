@@ -18,7 +18,7 @@ public class BobcatMap extends Map {
 
     public BobcatMap() {
         super("bobcat_map.txt", new CommonTileset());
-        this.playerStartPosition = getMapTile(6, 6).getLocation();
+        this.playerStartPosition = getMapTile(16, 11).getLocation();
     }
 
     // @Override
