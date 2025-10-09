@@ -15,7 +15,7 @@ import java.util.HashMap;
 public class Cat extends Player {
 
     public Cat(float x, float y) {
-        super(new SpriteSheet(ImageLoader.load("Cat.png"), 24, 24), x, y, "STAND_RIGHT");
+        super(new SpriteSheet(ImageLoader.load("alexsprite5.png"), 24, 24), x, y, "STAND_RIGHT");
         gravity = 1.0f;
         terminalVelocityY = 8f;
         jumpHeight = 16f;
@@ -32,7 +32,7 @@ public class Cat extends Player {
 
     public void draw(GraphicsHandler graphicsHandler) {
         super.draw(graphicsHandler);
-        // drawBounds(graphicsHandler, new Color(255, 0, 0, 170));
+        //drawBounds(graphicsHandler, new Color(255, 0, 0, 170));
     }
 
     @Override

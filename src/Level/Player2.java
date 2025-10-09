@@ -419,10 +419,10 @@ public abstract class Player2 extends GameObject {
         return playerState == PlayerState.JUMPING;
     }
 
-    
+    /* 
     public void draw(GraphicsHandler graphicsHandler) {
         super.draw(graphicsHandler);
         drawBounds(graphicsHandler, new Color(0, 255, 0, 100));
-    }
+    } */
     
 }
