@@ -12,7 +12,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 
-public class CharacterChooseScreen extends Screen {
+public class CharacterChooseScreen2 extends Screen {
    protected ScreenCoordinator screenCoordinator;
    protected Map background;
    protected KeyLocker keyLocker = new KeyLocker();
@@ -39,7 +39,7 @@ public class CharacterChooseScreen extends Screen {
 
 
 
-   public CharacterChooseScreen(ScreenCoordinator screenCoordinator) {
+   public CharacterChooseScreen2(ScreenCoordinator screenCoordinator) {
        this.screenCoordinator = screenCoordinator;
    }
 
