@@ -24,7 +24,7 @@ public class CharacterChooseScreen extends Screen {
    String[] characters = {"Alex", "Prof. Nicolini", "Boomer", "Chester", "Marie", "Judy"};
 
 
-   String[] characterFiles = {"alex.png", "prof._nicolini.png", "boomer.jpeg", "chester.png", "marie.jpeg", "judy.png"};
+   String[] characterFiles = {"CCEMap.png", "prof._nicolini.png", "boomer.jpeg", "chester.png", "marie.jpeg", "judy.png"};
 
 
    Color[] colors={
