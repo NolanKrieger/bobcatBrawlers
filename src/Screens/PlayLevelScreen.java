@@ -13,8 +13,6 @@ import java.awt.image.BufferedImage;
 import Engine.ImageLoader;
 import Players.*;
 
-
-
 import Utils.Point;
 
 // This class is for when the platformer game is actually being played
