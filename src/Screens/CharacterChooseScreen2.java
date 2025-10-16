@@ -9,7 +9,6 @@ import Level.Map;
 
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
 
 public class CharacterChooseScreen2 extends Screen {
@@ -18,13 +17,14 @@ public class CharacterChooseScreen2 extends Screen {
    protected KeyLocker keyLocker = new KeyLocker();
    protected SpriteFont titleLabel;
    protected SpriteFont returnInstructionsLabel;
-   BufferedImage[] characterImages;
 
+   private int currentCharacterHovered = 0;
+   private int characterSelected = -1;
+   private int currentPlayer = 1;
+   public static int player1CharacterIndex = -1;
+   public static int player2CharacterIndex = -1;
 
    String[] characters = {"Alex", "Prof. Nicolini", "Boomer", "Chester", "Marie", "Judy"};
-
-
-   String[] characterFiles = {"alex.png", "prof._nicolini.png", "boomer.jpeg", "chester.png", "marie.jpeg", "judy.png"};
 
 
    Color[] colors={
@@ -35,13 +35,19 @@ public class CharacterChooseScreen2 extends Screen {
      new Color(255, 0, 255),
      new Color(28,28,132)
   
+     
    };
+
 
 
 
    public CharacterChooseScreen2(ScreenCoordinator screenCoordinator) {
        this.screenCoordinator = screenCoordinator;
    }
+
+   
+
+
 
 
    @Override
@@ -55,18 +61,17 @@ public class CharacterChooseScreen2 extends Screen {
        titleLabel.setOutlineThickness(3);
 
 
-       returnInstructionsLabel = new SpriteFont("Press Space to return to the menu",20, ScreenManager.getScreenHeight() - 40, "Arial", 18, Color.WHITE);
+       returnInstructionsLabel = new SpriteFont("Press Space to choose character",20, ScreenManager.getScreenHeight() - 40, "Arial", 18, Color.WHITE);
        returnInstructionsLabel.setOutlineColor(Color.BLACK);
        returnInstructionsLabel.setOutlineThickness(2);
 
-
        keyLocker.lockKey(Key.SPACE);
+       keyLocker.lockKey(Key.LEFT);
+       keyLocker.lockKey(Key.RIGHT);
 
 
-       characterImages = new BufferedImage[characterFiles.length];
-       for (int i = 0; i < characterFiles.length; i++) {
-           characterImages[i] = ImageLoader.load("Images/Characters/" + characterFiles[i]);
-       }
+
+       
    }
 
 
@@ -77,13 +82,43 @@ public class CharacterChooseScreen2 extends Screen {
 
        if (Keyboard.isKeyUp(Key.SPACE)) {
            keyLocker.unlockKey(Key.SPACE);
-       }
+        }
+       if (Keyboard.isKeyUp(Key.LEFT)) {
+        keyLocker.unlockKey(Key.LEFT);
+        }       
+        if (Keyboard.isKeyUp(Key.RIGHT)) {
+        keyLocker.unlockKey(Key.RIGHT);
+        }
+        
 
+ if (!keyLocker.isKeyLocked(Key.LEFT) && Keyboard.isKeyDown(Key.LEFT)) {
+    currentCharacterHovered--;
+    if (currentCharacterHovered < 0) currentCharacterHovered = characters.length - 1;
+    keyLocker.lockKey(Key.LEFT);
+ }
 
-       if (!keyLocker.isKeyLocked(Key.SPACE) && Keyboard.isKeyDown(Key.SPACE)) {
-           screenCoordinator.setGameState(GameState.MENU);
-       }
-   }
+if (!keyLocker.isKeyLocked(Key.RIGHT) && Keyboard.isKeyDown(Key.RIGHT)) {
+    currentCharacterHovered++;
+    if (currentCharacterHovered >= characters.length) currentCharacterHovered = 0;
+    keyLocker.lockKey(Key.RIGHT);
+}
+
+if (!keyLocker.isKeyLocked(Key.SPACE) && Keyboard.isKeyDown(Key.SPACE)) {
+    characterSelected = currentCharacterHovered;
+
+    if (currentPlayer == 1) {
+        player1CharacterIndex = characterSelected;
+        currentPlayer = 2;
+        titleLabel.setText("Choose Your Character - Player 2");
+    } else if (currentPlayer == 2) {
+        player2CharacterIndex = characterSelected;
+        screenCoordinator.setGameState(GameState.LEVEL);
+    }
+
+    keyLocker.lockKey(Key.SPACE);
+}
+        
+}
 
 
    @Override
@@ -97,26 +132,18 @@ public class CharacterChooseScreen2 extends Screen {
 
        int slotWidth = screenWidth / characters.length;
        int slotHeight = screenHeight - 100;
-
+       int y = 60;
 
        for (int i = 0; i < characters.length; i++) {
-           int x = i * slotWidth;
-           int y = 60;
+        int x = i * slotWidth;
+        Color c = colors[i];
 
+        if (i == currentCharacterHovered) {
 
-           graphicsHandler.drawFilledRectangle(x, y, slotWidth, slotHeight, colors[i]);
-
-
-           int imageBoxWidth = (int)(slotWidth * 0.9);
-           int imageBoxHeight = (int)(slotHeight * 0.85);
-           int imageBoxX = x + (slotWidth - imageBoxWidth) / 2;
-           int imageBoxY = y + 30;           
-
-
-           graphicsHandler.drawImage(characterImages[i], imageBoxX, imageBoxY, imageBoxWidth, imageBoxHeight);
-        
-
-
+             graphicsHandler.drawFilledRectangleWithBorder(x, y, slotWidth, slotHeight, c, Color.WHITE, 5);
+        } else {
+            graphicsHandler.drawFilledRectangle(x, y, slotWidth, slotHeight, c);
+        }
 
            SpriteFont nameLabel = new SpriteFont(characters[i], x + slotWidth / 2 - (characters[i].length() * 4), screenHeight - 60, "Arial", 18, Color.WHITE);
            nameLabel.setOutlineColor(Color.BLACK);
@@ -129,3 +156,4 @@ public class CharacterChooseScreen2 extends Screen {
        returnInstructionsLabel.draw(graphicsHandler);
    }
 }
+
