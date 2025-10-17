@@ -38,16 +38,9 @@ public class CharacterChooseScreen2 extends Screen {
      
    };
 
-
-
-
    public CharacterChooseScreen2(ScreenCoordinator screenCoordinator) {
        this.screenCoordinator = screenCoordinator;
    }
-
-   
-
-
 
 
    @Override
@@ -56,7 +49,7 @@ public class CharacterChooseScreen2 extends Screen {
        background.setAdjustCamera(false);
 
 
-       titleLabel = new SpriteFont("Choose Your Character", 235, 30, "Arial", 32, Color.WHITE);
+       titleLabel = new SpriteFont("Choose Your Character", 235, 25, "Arial", 32, Color.WHITE);
        titleLabel.setOutlineColor(Color.BLACK);
        titleLabel.setOutlineThickness(3);
 
@@ -109,7 +102,7 @@ if (!keyLocker.isKeyLocked(Key.SPACE) && Keyboard.isKeyDown(Key.SPACE)) {
     if (currentPlayer == 1) {
         player1CharacterIndex = characterSelected;
         currentPlayer = 2;
-        titleLabel.setText("Choose Your Character - Player 2");
+        titleLabel.setText("Player 2 Choose Your Character");
     } else if (currentPlayer == 2) {
         player2CharacterIndex = characterSelected;
         screenCoordinator.setGameState(GameState.LEVEL);
