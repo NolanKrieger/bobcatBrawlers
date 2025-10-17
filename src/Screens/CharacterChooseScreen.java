@@ -114,7 +114,7 @@ public class CharacterChooseScreen extends Screen {
 
 
            graphicsHandler.drawImage(characterImages[i], imageBoxX, imageBoxY, imageBoxWidth, imageBoxHeight);
-          
+        
 
 
 

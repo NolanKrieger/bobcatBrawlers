@@ -31,7 +31,7 @@ public class Camera extends Rectangle {
     private final int UPDATE_OFF_SCREEN_RANGE = 4;
 
     public Camera(int startX, int startY, int tileWidth, int tileHeight, Map map) {
-        super(startX, startY, ScreenManager.getScreenWidth() / tileWidth, ScreenManager.getScreenHeight() / tileHeight);
+        super(startX, startY, map.width, map.height);
         this.map = map;
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
@@ -48,6 +48,9 @@ public class Camera extends Rectangle {
     }
 
     public void update(Player player) {
+
+        this.x = 0;
+        this.y = 0;
         updateMapTiles();
         updateMapEntities(player);
     }

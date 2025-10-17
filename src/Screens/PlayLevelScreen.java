@@ -9,11 +9,9 @@ import Level.Player;
 import Level.Player2;
 import Level.PlayerListener;
 import Maps.TestMap;
-import Players.Cat;
-import Players.Cat2;
-import Engine.Key;
 import java.awt.image.BufferedImage;
 import Engine.ImageLoader;
+import Players.*;
 
 import Utils.Point;
 
@@ -43,6 +41,9 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     private int p2JumpCount = 0;         // how many jumps have started (capped at 5)
     private boolean p2WasJumping = false;
 
+
+
+
     public PlayLevelScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
     }
@@ -58,18 +59,35 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     }
 
     public void initialize() {
-        // define/setup map
+
         this.map = new TestMap();
 
-        // setup player
-        this.player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y);
-        this.player.setMap(map);
-        this.player.addListener(this);
-
-        this.player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y);
-        this.player2.setMap(map);
-        this.player2.addListener(this);
-
+        int p1Index = CharacterChooseScreen2.player1CharacterIndex;
+        int p2Index = CharacterChooseScreen2.player2CharacterIndex;
+        
+        switch (p1Index) {
+            case 0: player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
+       //     case 1: player = new Nicolini(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break; // replace later with Nicolini
+         //   case 2: player = new Boomer(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
+          //  case 3: player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
+         //   case 4: player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
+//case 5: player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
+         //   default: player = new Alex(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
+        }
+        player.setMap(map);
+        player.addListener(this);
+        
+        switch (p2Index) {
+            case 0: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
+         //   case 1: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break; // replace later with Nicolini2 etc.
+        //    case 2: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
+        //    case 3: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
+       //    case 4: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
+       //     case 5: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
+        //    default: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
+        }
+        player2.setMap(map);
+        player2.addListener(this);
         // screens
         levelClearedScreen = new LevelClearedScreen();
         levelLoseScreen = new LevelLoseScreen(this);

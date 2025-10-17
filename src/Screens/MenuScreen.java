@@ -18,6 +18,8 @@ public class MenuScreen extends Screen {
     protected SpriteFont playGame;
     protected SpriteFont tutorial;
     protected SpriteFont characterSelect;
+    protected SpriteFont characterSelect2;
+
     protected SpriteFont credits;
 
     // Fallback animated map
@@ -126,7 +128,7 @@ public class MenuScreen extends Screen {
         if (Keyboard.isKeyUp(Key.SPACE)) keyLocker.unlockKey(Key.SPACE);
         if (!keyLocker.isKeyLocked(Key.SPACE) && Keyboard.isKeyDown(Key.SPACE)) {
             menuItemSelected = currentMenuItemHovered;
-            if (menuItemSelected == 0) screenCoordinator.setGameState(GameState.LEVEL);
+            if (menuItemSelected == 0) screenCoordinator.setGameState(GameState.CHARACTER_SELECT2);
             else if (menuItemSelected == 1) screenCoordinator.setGameState(GameState.TUTORIAL);
             else if (menuItemSelected == 2) screenCoordinator.setGameState(GameState.CHARACTER_SELECT);
             else if (menuItemSelected == 3) screenCoordinator.setGameState(GameState.CREDITS);
