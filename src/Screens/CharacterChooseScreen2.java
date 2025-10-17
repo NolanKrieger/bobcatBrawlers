@@ -105,7 +105,7 @@ if (!keyLocker.isKeyLocked(Key.SPACE) && Keyboard.isKeyDown(Key.SPACE)) {
         titleLabel.setText("Player 2 Choose Your Character");
     } else if (currentPlayer == 2) {
         player2CharacterIndex = characterSelected;
-        screenCoordinator.setGameState(GameState.LEVEL);
+        screenCoordinator.setGameState(GameState.MAP_SELECT);
     }
 
     keyLocker.lockKey(Key.SPACE);

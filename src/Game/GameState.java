@@ -4,5 +4,5 @@ package Game;
  * This is used by the ScreenCoordinator class to determine which "state" the game is currently in
  */
 public enum GameState {
-    MENU, LEVEL, CREDITS, TUTORIAL, CHARACTER_SELECT, CHARACTER_SELECT2
+    MENU, LEVEL, CREDITS, TUTORIAL, CHARACTER_SELECT, CHARACTER_SELECT2, MAP_SELECT
 }

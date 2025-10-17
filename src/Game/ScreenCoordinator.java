@@ -6,6 +6,7 @@ import Engine.Screen;
 import Screens.CharacterChooseScreen;
 import Screens.CharacterChooseScreen2;
 import Screens.CreditsScreen;
+import Screens.MapSelectScreen;
 import Screens.MenuScreen;
 import Screens.PlayLevelScreen;
 import Screens.TutorialScreen;
@@ -61,6 +62,9 @@ public class ScreenCoordinator extends Screen {
                         break;
                         case CHARACTER_SELECT2:
                         currentScreen = new CharacterChooseScreen2(this);
+                        break;
+                    case MAP_SELECT:
+                        currentScreen = new MapSelectScreen(this);
                         break;
                     default:
                         currentScreen = new DefaultScreen();

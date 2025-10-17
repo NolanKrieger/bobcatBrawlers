@@ -1,131 +1,142 @@
-// package Screens;
+package Screens;
 
-// import Engine.*;
-// import Game.GameState;
-// import Game.ScreenCoordinator;
-// import Maps.TitleScreenMap;
-// import SpriteFont.SpriteFont;
-// import Level.Map;
-
-
-// import java.awt.*;
-// import java.awt.image.BufferedImage;
+import Engine.*;
+import Game.GameState;
+import Game.ScreenCoordinator;
+import Maps.TitleScreenMap;
+import SpriteFont.SpriteFont;
+import Level.Map;
 
 
-// public class MapSelectScreen extends Screen {
-//    protected ScreenCoordinator screenCoordinator;
-//    protected Map background;
-//    protected KeyLocker keyLocker = new KeyLocker();
-//    protected SpriteFont titleLabel;
-//    protected SpriteFont returnInstructionsLabel;
-//    BufferedImage[] mapImages;
+import java.awt.*;
 
 
-//    String[] maps = {"QuadMap", "CCE030Map", "BobcatMap"};
+public class MapSelectScreen extends Screen {
+   protected ScreenCoordinator screenCoordinator;
+   protected Map background;
+   protected KeyLocker keyLocker = new KeyLocker();
+   protected SpriteFont titleLabel;
+   protected SpriteFont returnInstructionsLabel;
+
+   private int currentCharacterHovered = 0;
+   private int characterSelected = -1;
+   public static int selectedMapIndex = -1;
+
+   String[] characters = {"Quad", "CCE030", "The Bobcat"};
 
 
-//    String[] mapFiles = {"QuadMap.png", "CCE030Map.png", "BobcatMap.png"};
-
-
-//    Color[] colors={
-//      Color.BLACK,
-//      Color.RED,
-//      Color.YELLOW,
-//      new Color(135, 206, 235),
-//      new Color(255, 0, 255),
-//      new Color(28,28,132)
+   Color[] colors={
+     Color.BLACK,
+     Color.RED,
+     Color.YELLOW,
+     new Color(135, 206, 235),
+     new Color(255, 0, 255),
+     new Color(28,28,132)
   
-//    };
+     
+   };
+
+   public MapSelectScreen(ScreenCoordinator screenCoordinator) {
+       this.screenCoordinator = screenCoordinator;
+   }
+
+
+   @Override
+   public void initialize() {
+       background = new TitleScreenMap();
+       background.setAdjustCamera(false);
+
+
+       titleLabel = new SpriteFont("Choose Your Map", 235, 25, "Arial", 32, Color.WHITE);
+       titleLabel.setOutlineColor(Color.BLACK);
+       titleLabel.setOutlineThickness(3);
+
+
+       returnInstructionsLabel = new SpriteFont("Press Space to choose map",20, ScreenManager.getScreenHeight() - 40, "Arial", 18, Color.WHITE);
+       returnInstructionsLabel.setOutlineColor(Color.BLACK);
+       returnInstructionsLabel.setOutlineThickness(2);
+
+       keyLocker.lockKey(Key.SPACE);
+       keyLocker.lockKey(Key.LEFT);
+       keyLocker.lockKey(Key.RIGHT);
 
 
 
-//    public MapSelectScreen(ScreenCoordinator screenCoordinator) {
-//        this.screenCoordinator = screenCoordinator;
-//    }
+       
+   }
 
 
-//    @Override
-//    public void initialize() {
-//        background = new TitleScreenMap();
-//        background.setAdjustCamera(false);
+   @Override
+   public void update() {
+       background.update(null);
 
 
-//        titleLabel = new SpriteFont("Choose Your Character", 235, 30, "Arial", 32, Color.WHITE);
-//        titleLabel.setOutlineColor(Color.BLACK);
-//        titleLabel.setOutlineThickness(3);
+       if (Keyboard.isKeyUp(Key.SPACE)) {
+           keyLocker.unlockKey(Key.SPACE);
+        }
+       if (Keyboard.isKeyUp(Key.LEFT)) {
+        keyLocker.unlockKey(Key.LEFT);
+        }       
+        if (Keyboard.isKeyUp(Key.RIGHT)) {
+        keyLocker.unlockKey(Key.RIGHT);
+        }
+        
+
+ if (!keyLocker.isKeyLocked(Key.LEFT) && Keyboard.isKeyDown(Key.LEFT)) {
+    currentCharacterHovered--;
+    if (currentCharacterHovered < 0) currentCharacterHovered = characters.length - 1;
+    keyLocker.lockKey(Key.LEFT);
+ }
+
+if (!keyLocker.isKeyLocked(Key.RIGHT) && Keyboard.isKeyDown(Key.RIGHT)) {
+    currentCharacterHovered++;
+    if (currentCharacterHovered >= characters.length) currentCharacterHovered = 0;
+    keyLocker.lockKey(Key.RIGHT);
+}
+
+if (!keyLocker.isKeyLocked(Key.SPACE) && Keyboard.isKeyDown(Key.SPACE)) {
+    characterSelected = currentCharacterHovered;
+    selectedMapIndex = characterSelected;
+    screenCoordinator.setGameState(GameState.LEVEL);
+    keyLocker.lockKey(Key.SPACE);
+}
+        
+}
 
 
-//        returnInstructionsLabel = new SpriteFont("Press Space to return to the menu",20, ScreenManager.getScreenHeight() - 40, "Arial", 18, Color.WHITE);
-//        returnInstructionsLabel.setOutlineColor(Color.BLACK);
-//        returnInstructionsLabel.setOutlineThickness(2);
+   @Override
+   public void draw(GraphicsHandler graphicsHandler) {
+       background.draw(graphicsHandler);
 
 
-//        keyLocker.lockKey(Key.SPACE);
+       int screenWidth = ScreenManager.getScreenWidth();
+       int screenHeight = ScreenManager.getScreenHeight();
 
 
-//        mapImages = new BufferedImage[mapFiles.length];
-//        for (int i = 0; i < mapFiles.length; i++) {
-//            mapImages[i] = ImageLoader.load("Images/Maps/" + mapFiles[i]);
-//        }
-//    }
+       int slotWidth = screenWidth / characters.length;
+       int slotHeight = screenHeight - 100;
+       int y = 60;
+
+       for (int i = 0; i < characters.length; i++) {
+        int x = i * slotWidth;
+        Color c = colors[i];
+
+        if (i == currentCharacterHovered) {
+
+             graphicsHandler.drawFilledRectangleWithBorder(x, y, slotWidth, slotHeight, c, Color.WHITE, 5);
+        } else {
+            graphicsHandler.drawFilledRectangle(x, y, slotWidth, slotHeight, c);
+        }
+
+           SpriteFont nameLabel = new SpriteFont(characters[i], x + slotWidth / 2 - (characters[i].length() * 4), screenHeight - 60, "Arial", 18, Color.WHITE);
+           nameLabel.setOutlineColor(Color.BLACK);
+           nameLabel.setOutlineThickness(2);
+           nameLabel.draw(graphicsHandler);
+       }
 
 
-//    @Override
-//    public void update() {
-//        background.update(null);
+       titleLabel.draw(graphicsHandler);
+       returnInstructionsLabel.draw(graphicsHandler);
+   }
+}
 
-
-//        if (Keyboard.isKeyUp(Key.SPACE)) {
-//            keyLocker.unlockKey(Key.SPACE);
-//        }
-
-
-//        if (!keyLocker.isKeyLocked(Key.SPACE) && Keyboard.isKeyDown(Key.SPACE)) {
-//            screenCoordinator.setGameState(GameState.MENU);
-//        }
-//    }
-
-
-//    @Override
-//    public void draw(GraphicsHandler graphicsHandler) {
-//        background.draw(graphicsHandler);
-
-
-//        int screenWidth = ScreenManager.getScreenWidth();
-//        int screenHeight = ScreenManager.getScreenHeight();
-
-
-//        int slotWidth = screenWidth / mapImages.length;
-//        int slotHeight = screenHeight - 100;
-
-
-//        for (int i = 0; i < maps.length; i++) {
-//            int x = i * slotWidth;
-//            int y = 60;
-
-
-//            graphicsHandler.drawFilledRectangle(x, y, slotWidth, slotHeight, colors[i]);
-
-
-//            int imageBoxWidth = (int)(slotWidth * 0.9);
-//            int imageBoxHeight = (int)(slotHeight * 0.85);
-//            int imageBoxX = x + (slotWidth - imageBoxWidth) / 2;
-//            int imageBoxY = y + 30;           
-
-
-//            graphicsHandler.drawImage(mapImages[i], imageBoxX, imageBoxY, imageBoxWidth, imageBoxHeight);
-          
-
-
-
-//            SpriteFont nameLabel = new SpriteFont(maps[i], x + slotWidth / 2 - (maps[i].length() * 4), screenHeight - 60, "Arial", 18, Color.WHITE);
-//            nameLabel.setOutlineColor(Color.BLACK);
-//            nameLabel.setOutlineThickness(2);
-//            nameLabel.draw(graphicsHandler);
-//        }
-
-
-//        titleLabel.draw(graphicsHandler);
-//        returnInstructionsLabel.draw(graphicsHandler);
-//    }
-// }
