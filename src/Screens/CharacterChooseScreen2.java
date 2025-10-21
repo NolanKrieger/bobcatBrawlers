@@ -6,7 +6,11 @@ import Game.ScreenCoordinator;
 import Maps.TitleScreenMap;
 import SpriteFont.SpriteFont;
 import Level.Map;
+import java.awt.image.BufferedImage;
 
+import GameObject.SpriteSheet;
+
+import java.util.HashMap;
 
 import java.awt.*;
 
@@ -17,6 +21,8 @@ public class CharacterChooseScreen2 extends Screen {
    protected KeyLocker keyLocker = new KeyLocker();
    protected SpriteFont titleLabel;
    protected SpriteFont returnInstructionsLabel;
+   BufferedImage[] characterImages;
+
 
    private int currentCharacterHovered = 0;
    private int characterSelected = -1;
@@ -25,6 +31,8 @@ public class CharacterChooseScreen2 extends Screen {
    public static int player2CharacterIndex = -1;
 
    String[] characters = {"Alex", "Prof. Nicolini", "Boomer", "Chester", "Marie", "Judy"};
+
+
 
 
    Color[] colors={
@@ -49,7 +57,7 @@ public class CharacterChooseScreen2 extends Screen {
        background.setAdjustCamera(false);
 
 
-       titleLabel = new SpriteFont("Choose Your Character", 235, 25, "Arial", 32, Color.WHITE);
+       titleLabel = new SpriteFont("Choose Your Character", 475, 25, "Arial", 32, Color.WHITE);
        titleLabel.setOutlineColor(Color.BLACK);
        titleLabel.setOutlineThickness(3);
 
@@ -62,10 +70,21 @@ public class CharacterChooseScreen2 extends Screen {
        keyLocker.lockKey(Key.LEFT);
        keyLocker.lockKey(Key.RIGHT);
 
+       characterImages = new BufferedImage[characters.length];
 
+    // For now, just add one sprite (Alex)
+    SpriteSheet alexSheet = new SpriteSheet(ImageLoader.load("alexsprite5.png"), 24, 24);
+    characterImages[0] = alexSheet.getSprite(0, 0);
+
+    //Add more characters later:
+    //SpriteSheet Boomer/etcSheet = new SpriteSheet(ImageLoader.load("alexsprite5.png"), 24, 24);
+    //characterImages[1] = "boomer/etc"Sheet.getSprite(0, 0);
+
+   }
 
        
-   }
+       
+   
 
 
    @Override
@@ -105,13 +124,15 @@ if (!keyLocker.isKeyLocked(Key.SPACE) && Keyboard.isKeyDown(Key.SPACE)) {
         titleLabel.setText("Player 2 Choose Your Character");
     } else if (currentPlayer == 2) {
         player2CharacterIndex = characterSelected;
-        screenCoordinator.setGameState(GameState.MAP_SELECT);
+        screenCoordinator.setGameState(GameState.LEVEL);
     }
 
     keyLocker.lockKey(Key.SPACE);
 }
         
 }
+
+
 
 
    @Override
@@ -130,19 +151,31 @@ if (!keyLocker.isKeyLocked(Key.SPACE) && Keyboard.isKeyDown(Key.SPACE)) {
        for (int i = 0; i < characters.length; i++) {
         int x = i * slotWidth;
         Color c = colors[i];
-
+    
+        // Draw background slot
         if (i == currentCharacterHovered) {
-
-             graphicsHandler.drawFilledRectangleWithBorder(x, y, slotWidth, slotHeight, c, Color.WHITE, 5);
+            graphicsHandler.drawFilledRectangleWithBorder(x, y, slotWidth, slotHeight, c, Color.WHITE, 5);
         } else {
             graphicsHandler.drawFilledRectangle(x, y, slotWidth, slotHeight, c);
         }
-
-           SpriteFont nameLabel = new SpriteFont(characters[i], x + slotWidth / 2 - (characters[i].length() * 4), screenHeight - 60, "Arial", 18, Color.WHITE);
-           nameLabel.setOutlineColor(Color.BLACK);
-           nameLabel.setOutlineThickness(2);
-           nameLabel.draw(graphicsHandler);
-       }
+    
+        // === NEW: Draw character sprite if available ===
+        if (characterImages != null && characterImages[i] != null) {
+            int spriteWidth = characterImages[i].getWidth() * 5;   // scale ×5 like in Cat.java
+            int spriteHeight = characterImages[i].getHeight() * 5;
+    
+            int spriteX = x + (slotWidth / 2) - (spriteWidth / 2);
+            int spriteY = y + (slotHeight / 2) - (spriteHeight / 2) - 20;
+    
+            graphicsHandler.drawImage(characterImages[i], spriteX, spriteY, spriteWidth, spriteHeight);
+        }
+    
+        // Draw name label
+        SpriteFont nameLabel = new SpriteFont(characters[i], x + slotWidth / 2 - (characters[i].length() * 4), screenHeight - 60, "Arial", 18, Color.WHITE);
+        nameLabel.setOutlineColor(Color.BLACK);
+        nameLabel.setOutlineThickness(2);
+        nameLabel.draw(graphicsHandler);
+    }
 
 
        titleLabel.draw(graphicsHandler);

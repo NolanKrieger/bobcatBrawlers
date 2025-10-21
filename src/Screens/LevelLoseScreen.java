@@ -19,17 +19,8 @@ public class LevelLoseScreen extends Screen {
 
     @Override
     public void initialize() {
-        // String winner;
-        // if(player1.getHealth() <= 0 && player2.getHealth() <= 0) {
-        //     winner = "No One";
-        // } else if(player1.getHealth() <= 0) {
-        //     winner = "2";
-        // } else {
-        //     winner = "1";
-        // }
-        loseMessage = new SpriteFont("Player " + /*winner + */ " Won!", 350, 239, "Arial", 30, Color.white);
-
-        instructions = new SpriteFont("Press Space to try again or Escape to go back to the main menu", 120, 279,"Arial", 20, Color.white);
+        loseMessage = new SpriteFont("You lose!", 520, 300, "Arial", 30, Color.white);
+        instructions = new SpriteFont("Press Space to try again or Escape to go back to the main menu", 320, 330,"Arial", 20, Color.white);
         keyLocker.lockKey(Key.SPACE);
         keyLocker.lockKey(Key.ESC);
     }
