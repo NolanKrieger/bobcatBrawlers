@@ -50,6 +50,9 @@ public abstract class Player2 extends GameObject {
 
     // flags
     protected boolean isInvincible = false; // if true, player cannot be hurt by enemies (good for testing)
+    // health system
+    protected int maxHealth = 10; // number of hits the player can take before dying
+    protected int health = maxHealth;
 
     public Player2(SpriteSheet spriteSheet, float x, float y, String startingAnimationName) {
         super(spriteSheet, x, y, startingAnimationName);
@@ -325,10 +328,44 @@ public abstract class Player2 extends GameObject {
         if (!isInvincible) {
             // if map entity is an enemy, kill player on touch
             if (mapEntity instanceof Enemy) {
-                levelState = LevelState.PLAYER_DEAD;
+                // take one hit
+                damage(1, true);
             }
         }
     }
+
+    //If health reaches zero, tell the player that they died
+    public void damage(int amount, boolean notifyListeners) {
+        if (isInvincible || levelState == LevelState.PLAYER_DEAD) return;
+        health -= amount;
+        if (health < 0) health = 0;
+        if (notifyListeners) {
+            for (PlayerListener listener : listeners) {
+                listener.onHurt(this, amount);
+            }
+        }
+        if (health == 0) {
+            levelState = LevelState.PLAYER_DEAD;
+            System.out.println("Player died");
+            for (PlayerListener listener : listeners) {
+                listener.onDeath();
+                updatePlayerDead();
+            }
+        }
+    }
+
+    // convenience method: notify listeners by default
+    public void damage(int amount) { damage(amount, true); }
+
+    // Heal the player by the given amount (potential feature for a future sprint).
+    public void heal(int amount) {
+        if (amount <= 0) return;
+        health += amount;
+        if (health > maxHealth) health = maxHealth;
+    }
+
+    public int getHealth() { return health; }
+    public int getMaxHealth() { return maxHealth; }
 
     // other entities can call this to tell the player they beat a level
     public void completeLevel() {

@@ -12,6 +12,7 @@ import Maps.TestMap;
 import java.awt.image.BufferedImage;
 import Engine.ImageLoader;
 import Players.*;
+import GameObject.GameObject;
 
 import Utils.Point;
 
@@ -28,18 +29,16 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     protected LevelLoseScreen levelLoseScreen;
     protected boolean levelCompletedStateChangeStart;
 
-    // --- Overhead images ---
-    // Player 1 default + per-jump images (up to 5 jumps)
+    // Overhead health bar images 
+    // Player 1 Health bar
     private BufferedImage p1Default;
-    private BufferedImage[] p1JumpImages = new BufferedImage[5];
-    private int p1JumpCount = 0;         // how many jumps have started (capped at 5)
-    private boolean p1WasJumping = false;
+    private BufferedImage[] p1JumpImages = new BufferedImage[4];
+    
 
-    // Player 2 default + per-jump images (up to 5 jumps)
+    // // Player 2 Health bar
     private BufferedImage p2Default;
-    private BufferedImage[] p2JumpImages = new BufferedImage[5];
-    private int p2JumpCount = 0;         // how many jumps have started (capped at 5)
-    private boolean p2WasJumping = false;
+    private BufferedImage[] p2JumpImages = new BufferedImage[4];
+
 
 
 
@@ -48,7 +47,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         this.screenCoordinator = screenCoordinator;
     }
 
-    // Safely load an image by filename; returns null if missing
+    // Safely load an image by filename. It returns null if the image is missin
     private BufferedImage safeLoadImage(String filename) {
         try {
             return ImageLoader.load(filename);
@@ -92,22 +91,20 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         levelClearedScreen = new LevelClearedScreen();
         levelLoseScreen = new LevelLoseScreen(this);
 
-        // --- Load overhead images once ---
-        // Player 1 defaults
-        p1Default = safeLoadImage("PlayerHealth.png");
-        for (int i = 0; i < 5; i++) {
-            // expects: PlayerHealth1.png ... PlayerHealth5.png
-            p1JumpImages[i] = safeLoadImage("PlayerHealth" + (i + 1) + ".png");
-        }
-
-        // Player 2 defaults
-        p2Default = safeLoadImage("PlayerHealthPlayer2.png");
-        for (int i = 0; i < 5; i++) {
-            // expects: PlayerHealthPlayer2_1.png ... PlayerHealthPlayer2_5.png
-            p2JumpImages[i] = safeLoadImage("PlayerHealthPlayer2_" + (i + 1) + ".png");
-        }
-
+       
         this.playLevelScreenState = PlayLevelScreenState.RUNNING;
+
+        // load health overlay images for player 1 (stages 1-5)
+        p1Default = safeLoadImage("PlayerHealth.png");
+        for (int i = 0; i < p1JumpImages.length; i++) {
+            p1JumpImages[i] = safeLoadImage("PlayerHealth" + (i+1) + ".png");
+        }
+
+        // load health overlay images for player 2 (stages 1..10)
+        p2Default = safeLoadImage("PlayerHealthPlayer2.png");
+        for (int i = 0; i < p2JumpImages.length; i++) {
+            p2JumpImages[i] = safeLoadImage("PlayerHealthPlayer2_" + (i+1) + ".png");
+        }
     }
 
     public void update() {
@@ -121,19 +118,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
 
                 // --- Detect "jump start" edges and advance image (max 5) ---
 
-                // Player 1 edge detect
-                boolean p1JumpingNow = player != null && player.isJumpingState();
-                if (p1JumpingNow && !p1WasJumping && p1JumpCount < 5) {
-                    p1JumpCount++; // move to next image slot
-                }
-                p1WasJumping = p1JumpingNow;
-
-                // Player 2 edge detect
-                boolean p2JumpingNow = player2 != null && player2.isJumpingState();
-                if (p2JumpingNow && !p2WasJumping && p2JumpCount < 5) {
-                    p2JumpCount++; // move to next image slot
-                }
-                p2WasJumping = p2JumpingNow;
+                // Health overlay is driven by each player's current health; no jump-based image switching
 
                 break;
 
@@ -168,9 +153,21 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 player.draw(graphicsHandler);
                 if (player != null) {
                     BufferedImage img1 = p1Default;
-                    int idx1 = p1JumpCount - 1; // 0-based slot for 1..5 jumps
-                    if (idx1 >= 0 && idx1 < p1JumpImages.length && p1JumpImages[idx1] != null) {
-                        img1 = p1JumpImages[idx1];
+                    if (player != null) {
+                        // map player's health to one of the 10 overlay images so each hit advances one image
+                        int health = player.getHealth();
+                        int maxHealth = player.getMaxHealth();
+                        int idx1 = -1;
+                        if (maxHealth > 0) {
+                            //maxHealth - health
+                            int damageTaken = Math.max(0, Math.min(p1JumpImages.length, maxHealth - health));
+                            if (damageTaken > 0) {
+                                idx1 = damageTaken - 1;
+                            }
+                        }
+                        if (idx1 >= 0 && idx1 < p1JumpImages.length && p1JumpImages[idx1] != null) {
+                            img1 = p1JumpImages[idx1];
+                        }
                     }
                     if (img1 != null) {
                         int screenX = Math.round(player.getX() - map.getCamera().getX());
@@ -185,9 +182,19 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 player2.draw(graphicsHandler);
                 if (player2 != null) {
                     BufferedImage img2 = p2Default;
-                    int idx2 = p2JumpCount - 1; // 0-based slot for 1..5 jumps
-                    if (idx2 >= 0 && idx2 < p2JumpImages.length && p2JumpImages[idx2] != null) {
-                        img2 = p2JumpImages[idx2];
+                    if (player2 != null) {
+                        int health2 = player2.getHealth();
+                        int maxHealth2 = player2.getMaxHealth();
+                        int idx2 = -1;
+                        if (maxHealth2 > 0) {
+                            int damageTaken2 = Math.max(0, Math.min(p2JumpImages.length, maxHealth2 - health2));
+                            if (damageTaken2 > 0) {
+                                idx2 = damageTaken2 - 1;
+                            }
+                        }
+                        if (idx2 >= 0 && idx2 < p2JumpImages.length && p2JumpImages[idx2] != null) {
+                            img2 = p2JumpImages[idx2];
+                        }
                     }
                     if (img2 != null) {
                         int screenX2 = Math.round(player2.getX() - map.getCamera().getX());
@@ -226,6 +233,13 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         if (playLevelScreenState != PlayLevelScreenState.LEVEL_LOSE) {
             playLevelScreenState = PlayLevelScreenState.LEVEL_LOSE;
         }
+    }
+
+    @Override
+    public void onHurt(GameObject source, int amount) {
+        // when any player is hurt, we simply let the draw() method read player.getHealth() each frame
+        // If we wanted to mirror actual HP across players we would call player.damage(amount,false)/player2.damage(...)
+        // For now, no extra action is necessary here.
     }
 
     public void resetLevel() {
