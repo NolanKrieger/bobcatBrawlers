@@ -8,6 +8,7 @@ import Maps.TestMap;
 import Players.Cat;
 import Level.Player;
 import Level.PlayerListener;
+import GameObject.GameObject;
 import Maps.TitleScreenMap;
 import SpriteFont.SpriteFont;
 import Screens.TutorialLoseScreen;
@@ -70,6 +71,10 @@ public class TutorialScreen extends Screen implements PlayerListener {
     };
     tutorialLoseScreen = new TutorialLoseScreen(connect);
     showingLevelLose = true;
+   }
+   @Override
+   public void onHurt(GameObject source, int amount) {
+       // tutorial doesn't need this functionality
    }
    @Override
    public void initialize() {
