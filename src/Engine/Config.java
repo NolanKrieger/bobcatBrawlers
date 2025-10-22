@@ -28,8 +28,8 @@ public class Config {
 
 
 
-    public static final int GAME_WINDOW_WIDTH = 1600;
-    public static final int GAME_WINDOW_HEIGHT = 1200;
+    public static final int GAME_WINDOW_WIDTH = 1300;
+    public static final int GAME_WINDOW_HEIGHT = 800;
 
     public static final Color TRANSPARENT_COLOR = Colors.MAGENTA;
 
