@@ -8,6 +8,9 @@ import Level.Map;
 import Level.Player;
 import Level.Player2;
 import Level.PlayerListener;
+import Maps.BobcatMap;
+import Maps.CCEMap;
+import Maps.QuadMap;
 import Maps.TestMap;
 import java.awt.image.BufferedImage;
 import Engine.ImageLoader;
@@ -59,7 +62,22 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
 
     public void initialize() {
 
-        this.map = new TestMap();
+        // Load the selected map based on MapSelectScreen selection
+        int mapIndex = MapSelectScreen.selectedMapIndex;
+        switch (mapIndex) {
+            case 0:
+                this.map = new QuadMap();
+                break;
+            case 1:
+                this.map = new CCEMap();
+                break;
+            case 2:
+                this.map = new BobcatMap();
+                break;
+            default:
+                this.map = new TestMap();
+                break;
+        }
 
         int p1Index = CharacterChooseScreen2.player1CharacterIndex;
         int p2Index = CharacterChooseScreen2.player2CharacterIndex;
