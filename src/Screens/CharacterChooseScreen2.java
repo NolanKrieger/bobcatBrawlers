@@ -152,14 +152,12 @@ if (!keyLocker.isKeyLocked(Key.SPACE) && Keyboard.isKeyDown(Key.SPACE)) {
         int x = i * slotWidth;
         Color c = colors[i];
     
-        // Draw background slot
         if (i == currentCharacterHovered) {
             graphicsHandler.drawFilledRectangleWithBorder(x, y, slotWidth, slotHeight, c, Color.WHITE, 5);
         } else {
             graphicsHandler.drawFilledRectangle(x, y, slotWidth, slotHeight, c);
         }
     
-        // === NEW: Draw character sprite if available ===
         if (characterImages != null && characterImages[i] != null) {
             int spriteWidth = characterImages[i].getWidth() * 5;   // scale ×5 like in Cat.java
             int spriteHeight = characterImages[i].getHeight() * 5;
@@ -170,7 +168,6 @@ if (!keyLocker.isKeyLocked(Key.SPACE) && Keyboard.isKeyDown(Key.SPACE)) {
             graphicsHandler.drawImage(characterImages[i], spriteX, spriteY, spriteWidth, spriteHeight);
         }
     
-        // Draw name label
         SpriteFont nameLabel = new SpriteFont(characters[i], x + slotWidth / 2 - (characters[i].length() * 4), screenHeight - 60, "Arial", 18, Color.WHITE);
         nameLabel.setOutlineColor(Color.BLACK);
         nameLabel.setOutlineThickness(2);
