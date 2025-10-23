@@ -74,6 +74,9 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
             case 2:
                 this.map = new BobcatMap();
                 break;
+            case 3:
+                this.map = new TestMap();
+                break;
             default:
                 this.map = new TestMap();
                 break;
