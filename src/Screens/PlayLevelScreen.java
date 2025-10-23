@@ -5,6 +5,7 @@ import Engine.Screen;
 import Game.GameState;
 import Game.ScreenCoordinator;
 import Level.Map;
+import Engine.AudioPlayer;
 import Level.Player;
 import Level.Player2;
 import Level.PlayerListener;
@@ -45,6 +46,8 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     private int hurtFlashTimerP1 = 0;
     private int hurtFlashTimerP2 = 0;
     private final int HURT_FLASH_MS = 400;
+    // Audio player for background music in this level
+    private AudioPlayer bgMusicPlayer;
 
     public PlayLevelScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
@@ -113,6 +116,15 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
        
         this.playLevelScreenState = PlayLevelScreenState.RUNNING;
 
+        // Start background music for the level with a loop
+        try {
+            
+            bgMusicPlayer = new AudioPlayer("Resources/Sounds/BackgroundMusic.wav");
+            bgMusicPlayer.playLoop();
+        } catch (Exception e) {
+            System.out.println("Failed to start background music: " + e.getMessage());
+        }
+
         // load health overlay images for player 1 (stages 1-5)
         p1Default = safeLoadImage("PlayerHealth.png");
         for (int i = 0; i < p1JumpImages.length; i++) {
@@ -153,6 +165,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                     levelClearedScreen.update();
                     screenTimer--;
                     if (screenTimer == 0) {
+                        stopMusic();
                         goBackToMenu();
                     }
                 }
@@ -161,6 +174,10 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
             // wait on level lose screen to make a decision (either resets level or sends player back to main menu)
             case LEVEL_LOSE:
                 levelLoseScreen.update();
+                // stop music when player loses
+                if (playLevelScreenState == PlayLevelScreenState.LEVEL_LOSE) {
+                    stopMusic();
+                }
                 break;
         }
     }
@@ -314,11 +331,23 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     }
 
     public void resetLevel() {
+        stopMusic();
         initialize();
     }
 
     public void goBackToMenu() {
+        stopMusic();
         screenCoordinator.setGameState(GameState.MENU);
+    }
+
+    private void stopMusic() {
+        try {
+            if (bgMusicPlayer != null) {
+                bgMusicPlayer.stop();
+                bgMusicPlayer.close();
+                bgMusicPlayer = null;
+            }
+        } catch (Exception ignored) {}
     }
 
     // This enum represents the different states this screen can be in
