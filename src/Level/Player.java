@@ -46,11 +46,15 @@ public abstract class Player extends GameObject {
     protected Key MOVE_LEFT_KEY = Key.A;
     protected Key MOVE_RIGHT_KEY = Key.D;
     protected Key CROUCH_KEY = Key.S;
+    protected Key ATTACK_KEY = Key.SPACE;
 
 
 
     // flags
     protected boolean isInvincible = false; // if true, player cannot be hurt by enemies (good for testing)
+    // for the health system
+    protected int maxHealth = 5; // number of hits the player can take before dying
+    protected int health = maxHealth;
 
     public Player(SpriteSheet spriteSheet, float x, float y, String startingAnimationName) {
         super(spriteSheet, x, y, startingAnimationName);
@@ -87,6 +91,22 @@ public abstract class Player extends GameObject {
             handlePlayerAnimation();
 
             updateLockedKeys();
+
+            // attack input: spawn a projectile when attack key is pressed
+            if (Keyboard.isKeyDown(ATTACK_KEY) && !keyLocker.isKeyLocked(ATTACK_KEY)) {
+                keyLocker.lockKey(ATTACK_KEY);
+                // projectile parameters
+                int projW = 8; int projH = 8;
+                float speed = 240f;
+                float vx = facingDirection == Direction.RIGHT ? speed : -speed;
+                float spawnX = facingDirection == Direction.RIGHT ? this.getX() + this.getWidth() + 4f : this.getX() - projW - 4f;
+                float spawnY = this.getY() + (this.getHeight() / 2f) - (projH / 2f);
+                try {
+                    map.addProjectileAttack(new ProjectileAttack(spawnX, spawnY, vx, 0f, 1, 4000, true));
+                } catch (Exception e) {
+                if (Engine.Debug.ENABLED) System.out.println("DEBUG: Failed to spawn player projectile: " + e);
+                }
+            }
 
             if (this.getY() > map.getEndBoundY()) {
             if (levelState != LevelState.PLAYER_DEAD) {
@@ -261,6 +281,9 @@ public abstract class Player extends GameObject {
         if (Keyboard.isKeyUp(JUMP_KEY)) {
             keyLocker.unlockKey(JUMP_KEY);
         }
+        if (Keyboard.isKeyUp(ATTACK_KEY)) {
+            keyLocker.unlockKey(ATTACK_KEY);
+        }
     }
 
     // anything extra the player should do based on interactions can be handled here
@@ -324,12 +347,46 @@ public abstract class Player extends GameObject {
     // other entities can call this method to hurt the player
     public void hurtPlayer(MapEntity mapEntity) {
         if (!isInvincible) {
-            // if map entity is an enemy, kill player on touch
+            // kill player on touch
             if (mapEntity instanceof Enemy) {
-                levelState = LevelState.PLAYER_DEAD;
+                // take one hit
+                damage(1, true);
             }
         }
     }
+
+    // This is the notify damage method.
+    public void damage(int amount, boolean notifyListeners) {
+        if (isInvincible || levelState == LevelState.PLAYER_DEAD) return;
+        health -= amount;
+        if (health < 0) health = 0;
+    if (Engine.Debug.ENABLED) System.out.println("DEBUG: Player damaged by " + amount + ", health now=" + health);
+        if (notifyListeners) {
+            for (PlayerListener listener : listeners) {
+                listener.onHurt(this, amount);
+            }
+        }
+        if (health == 0) {
+            levelState = LevelState.PLAYER_DEAD;
+            System.out.println("Player died");
+            for (PlayerListener listener : listeners) {
+                listener.onDeath();
+                updatePlayerDead();
+            }
+        }
+    }
+
+    public void damage(int amount) { damage(amount, true); }
+
+    // Heal the player by the given amount (Could be a potential feature for a future sprint).
+    public void heal(int amount) {
+        if (amount <= 0) return;
+        health += amount;
+        if (health > maxHealth) health = maxHealth;
+    }
+
+    public int getHealth() { return health; }
+    public int getMaxHealth() { return maxHealth; }
 
     // other entities can call this to tell the player they beat a level
     public void completeLevel() {

@@ -55,6 +55,8 @@ public abstract class Map {
     protected ArrayList<Enemy> enemies;
     protected ArrayList<EnhancedMapTile> enhancedMapTiles;
     protected ArrayList<NPC> npcs;
+    protected java.util.List<ProjectileAttack> projectileAttacks = new java.util.ArrayList<>();
+    protected java.util.List<MeleeAttack> meleeAttacks = new java.util.ArrayList<>();
 
     // if set to false, camera will not move as player moves
     protected boolean adjustCamera = true;
@@ -344,6 +346,16 @@ public abstract class Map {
             adjustMovementX(player);
         }
         camera.update(player);
+        int dtMs = 16;
+
+        for (ProjectileAttack p : new java.util.ArrayList<>(projectileAttacks)) {
+            p.update(dtMs, this, player);
+        }
+        projectileAttacks.removeIf(p -> !p.isAlive());
+        for (MeleeAttack m : new java.util.ArrayList<>(meleeAttacks)) {
+            m.update(dtMs, this, player);
+        }
+        meleeAttacks.removeIf(m -> !m.isAlive());
     }
 
     // based on the player's current X position (which in a level can potentially be updated each frame),
@@ -371,6 +383,12 @@ public abstract class Map {
                 camera.moveX(cameraDifference);
             }
         }
+    }
+    public void addProjectileAttack(ProjectileAttack p) {
+        projectileAttacks.add(p);
+    }
+    public void addMeleeAttack(MeleeAttack m) {
+        meleeAttacks.add(m);
     }
 
     // based on the player's current Y position (which in a level can potentially be updated each frame),
@@ -406,6 +424,14 @@ public abstract class Map {
 
     public void draw(GraphicsHandler graphicsHandler) {
         camera.draw(graphicsHandler);
+
+        // draw active projectiles and melee hitboxes (debug visuals)
+        for (ProjectileAttack p : projectileAttacks) {
+            p.draw(graphicsHandler, this);
+        }
+        for (MeleeAttack m : meleeAttacks) {
+            m.draw(graphicsHandler, this);
+        }
     }
 
     public int getEndBoundX() { return endBoundX; }
