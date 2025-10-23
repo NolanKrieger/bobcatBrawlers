@@ -15,16 +15,24 @@ public class CCEMap extends Map {
 
     public CCEMap() {
         super("CCEMap.txt", new CommonTileset());
-        Point catLocation = getMapTile(6, 6).getLocation().subtractX(24).subtractY(6);
-        cat = new Sprite(ImageLoader.loadSubImage("Cat.png", Colors.MAGENTA, 0, 0, 24, 24));
-        cat.setScale(3);
-        cat.setLocation(catLocation.x, catLocation.y);
+        this.playerStartPosition = getMapTile(6, 1).getLocation();
+        try {
+            // Point catLocation = getMapTile(15, 2).getLocation().subtractX(24).subtractY(6);
+            // cat = new Sprite(ImageLoader.loadSubImage("Cat.png", Colors.MAGENTA, 0, 0, 24, 24));
+            // cat.setScale(3);
+            // cat.setLocation(catLocation.x, catLocation.y);
+        } catch (Exception e) {
+            System.out.println("Warning: Could not load cat sprite for CCEMap: " + e.getMessage());
+            cat = null;
+        }
     }
 
     @Override
     public void draw(GraphicsHandler graphicsHandler) {
         super.draw(graphicsHandler);
-        cat.draw(graphicsHandler);
+        if (cat != null) {
+            cat.draw(graphicsHandler);
+        }
     }
 
 }

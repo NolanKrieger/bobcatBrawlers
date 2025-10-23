@@ -25,19 +25,7 @@ public class QuadMap extends Map {
         super("quad_map.txt", new CommonTileset());
         this.playerStartPosition = getMapTile(2, 11).getLocation();
         
-        // Load the background image with error handling
-        try {
-            backgroundImage = ImageLoader.load("quQuad.png");
-            if (backgroundImage != null) {
-                System.out.println("Successfully loaded quQuad.png background image");
-            } else {
-                System.out.println("quQuad.png loaded but image is null");
-            }
-        } catch (Exception e) {
-            System.out.println("Could not load background image for QuadMap: " + e.getMessage());
-            e.printStackTrace();
-            backgroundImage = null;
-        }
+        
     }
 
     @Override

@@ -19,6 +19,7 @@ public class LevelLoseScreen extends Screen {
 
     @Override
     public void initialize() {
+        
         loseMessage = new SpriteFont("You lose!", 520, 300, "Arial", 30, Color.white);
         instructions = new SpriteFont("Press Space to try again or Escape to go back to the main menu", 320, 330,"Arial", 20, Color.white);
         keyLocker.lockKey(Key.SPACE);
