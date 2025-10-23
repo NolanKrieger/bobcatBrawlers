@@ -308,16 +308,9 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
 
     @Override
     public void onHurt(GameObject source, int amount) {
-        // trigger a brief red flash over the HUD for the appropriate player
-        if (source == player) {
-            hurtFlashTimerP1 = HURT_FLASH_MS;
-        } else if (source == player2) {
-            hurtFlashTimerP2 = HURT_FLASH_MS;
-        } else {
-            // if source is not the player, flash both as a fallback
-            hurtFlashTimerP1 = HURT_FLASH_MS;
-            hurtFlashTimerP2 = HURT_FLASH_MS;
-        }
+        // when any player is hurt, we simply let the draw() method read player.getHealth() each frame
+        // If we wanted to mirror actual HP across players we would call player.damage(amount,false)/player2.damage(...)
+        // For now, no extra action is necessary here.
     }
 
     public void resetLevel() {
