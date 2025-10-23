@@ -71,8 +71,6 @@ public class MenuScreen extends Screen {
         backgroundImage = null;
         if (backgroundImagePath != null && !backgroundImagePath.isEmpty()) {
             try {
-                // IMPORTANT: Your ImageLoader expects a path RELATIVE to Config.RESOURCES_PATH
-                // e.g., "Images/menus/bobcat_brawlers_bg.png"
                 backgroundImage = ImageLoader.load(backgroundImagePath);
             } catch (RuntimeException e) {
                 System.out.println("MenuScreen: PNG background failed to load, using map fallback. Path: " + backgroundImagePath);

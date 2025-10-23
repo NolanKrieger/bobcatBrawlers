@@ -46,7 +46,7 @@ public class ScreenCoordinator extends Screen {
             if (previousGameState != gameState) {
                 switch (gameState) {
                     case MENU:
-                        currentScreen = new MenuScreen(this, "BackgroudImage.png"); // fixed typo
+                        currentScreen = new MenuScreen(this, "BackgroundImage.png"); 
                         break;
                     case LEVEL:
                         currentScreen = new PlayLevelScreen(this);
