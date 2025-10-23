@@ -102,7 +102,7 @@ public abstract class Player2 extends GameObject {
                 float spawnX = facingDirection == Direction.RIGHT ? this.getX() + this.getWidth() + 4f : this.getX() - projW - 4f;
                 float spawnY = this.getY() + (this.getHeight() / 2f) - (projH / 2f);
                 try {
-                    map.addProjectileAttack(new ProjectileAttack(spawnX, spawnY, vx, 0f, 1, 4000, true));
+                    map.addProjectileAttack(new ProjectileAttack(spawnX, spawnY, vx, 0f, 1, 4000, true, this));
                 } catch (Exception e) {
                     if (Engine.Debug.ENABLED) System.out.println("DEBUG: Failed to spawn player2 projectile: " + e);
                 }
@@ -485,11 +485,11 @@ public abstract class Player2 extends GameObject {
     }
 
 
-    
+    /* 
     public void draw(GraphicsHandler graphicsHandler) {
         super.draw(graphicsHandler);
         drawBounds(graphicsHandler, new Color(0, 255, 0, 100));
-    }
+    } */
 
     
 }

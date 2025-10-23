@@ -6,15 +6,15 @@ import Engine.ImageLoader;
 import GameObject.Frame;
 import GameObject.ImageEffect;
 import GameObject.SpriteSheet;
-import Level.Player;
+import Level.Player2;
 
 import java.util.HashMap;
 
 // This is the class for the Cat player character
 // basically just sets some values for physics and then defines animations
-public class AlexFighter extends Player {
+public class AlexFighter2 extends Player2 {
 
-    public AlexFighter(float x, float y) {
+    public AlexFighter2(float x, float y) {
         super(new SpriteSheet(ImageLoader.load("alexupdated6.png"), 24, 24), x, y, "STAND_RIGHT");
         gravity = 1.0f;
         terminalVelocityY = 8f;

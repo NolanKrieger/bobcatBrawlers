@@ -39,14 +39,14 @@ public class Boomer extends Player {
     public HashMap<String, Frame[]> loadAnimations(SpriteSheet spriteSheet) {
         return new HashMap<String, Frame[]>() {{
             put("STAND_RIGHT", new Frame[] {
-                    new FrameBuilder(spriteSheet.getSprite(0, 0))
+                    new FrameBuilder(spriteSheet.getSprite(5, 1))
                             .withScale(5)
                             .withBounds(8, 9, 10, 10)
                             .build()
             });
 
             put("STAND_LEFT", new Frame[] {
-                    new FrameBuilder(spriteSheet.getSprite(0, 0))
+                    new FrameBuilder(spriteSheet.getSprite(5, 1))
                             .withScale(5)
                             .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
                             .withBounds(8, 9, 10, 10)
@@ -54,7 +54,7 @@ public class Boomer extends Player {
             });
 
             put("WALK_RIGHT", new Frame[] {
-                    new FrameBuilder(spriteSheet.getSprite(1, 0), 14)
+                    new FrameBuilder(spriteSheet.getSprite(5, 1), 14)
                             .withScale(5)
                             .withBounds(8, 9, 10, 10)
                             .build(),
