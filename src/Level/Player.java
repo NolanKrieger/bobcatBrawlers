@@ -473,11 +473,11 @@ public abstract class Player extends GameObject {
     }
 
 
-    
+    /*
     public void draw(GraphicsHandler graphicsHandler) {
         super.draw(graphicsHandler);
         drawBounds(graphicsHandler, new Color(0, 255, 0, 100));
-    }
+    } */
 
     
     // Expose whether the player is currently in the JUMPING state
