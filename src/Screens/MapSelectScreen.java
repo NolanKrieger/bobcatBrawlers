@@ -22,7 +22,7 @@ public class MapSelectScreen extends Screen {
    private int characterSelected = -1;
    public static int selectedMapIndex = -1;
 
-   String[] characters = {"Quad", "CCE030", "The Bobcat"};
+   String[] characters = {"Quad", "CCE030", "The Bobcat", "Test Map"};
 
 
    Color[] colors={

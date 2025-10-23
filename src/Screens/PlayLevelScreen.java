@@ -79,6 +79,9 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
             case 2:
                 this.map = new BobcatMap();
                 break;
+            case 3:
+                this.map = new TestMap();
+                break;
             default:
                 this.map = new TestMap();
                 break;
@@ -327,6 +330,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
             } catch (Exception e) {
                 System.out.println("Failed to play lose sound: " + e.getMessage());
             }
+            levelLoseScreen.initialize();
         }
     }
 
@@ -359,7 +363,17 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 loseSoundPlayer.close();
                 loseSoundPlayer = null;
             }
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            System.out.println("Failed to stop music: " + e.getMessage());
+        }
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public Player2 getPlayer2() {
+        return player2;
     }
 
     // This enum represents the different states this screen can be in

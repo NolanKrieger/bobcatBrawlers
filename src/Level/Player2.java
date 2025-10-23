@@ -54,6 +54,8 @@ public abstract class Player2 extends GameObject {
     // health system
     protected int maxHealth = 10; // number of hits the player can take before dying
     protected int health = maxHealth;
+    
+    boolean win = true;
 
     public Player2(SpriteSheet spriteSheet, float x, float y, String startingAnimationName) {
         super(spriteSheet, x, y, startingAnimationName);
@@ -109,6 +111,8 @@ public abstract class Player2 extends GameObject {
             if (this.getY() > map.getEndBoundY()) {
             if (levelState != LevelState.PLAYER_DEAD) {
                 this.levelState = LevelState.PLAYER_DEAD;
+                health = 0;
+                win = false;
                 System.out.println("Player has died by falling out of the level.");
                 
                 for (PlayerListener listener : listeners) {
@@ -365,6 +369,7 @@ public abstract class Player2 extends GameObject {
         }
         if (health == 0) {
             levelState = LevelState.PLAYER_DEAD;
+            win = false;
             System.out.println("Player died");
             for (PlayerListener listener : listeners) {
                 listener.onDeath();
@@ -385,6 +390,10 @@ public abstract class Player2 extends GameObject {
 
     public int getHealth() { return health; }
     public int getMaxHealth() { return maxHealth; }
+
+    public boolean winner(){
+        return win;
+    }
 
     // other entities can call this to tell the player they beat a level
     public void completeLevel() {
