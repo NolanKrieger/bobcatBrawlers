@@ -52,7 +52,7 @@ public abstract class Player2 extends GameObject {
     // flags
     protected boolean isInvincible = false; // if true, player cannot be hurt by enemies (good for testing)
     // health system
-    protected int maxHealth = 10; // number of hits the player can take before dying
+    protected int maxHealth = 5; // number of hits the player can take before dying
     protected int health = maxHealth;
     
     boolean win = true;
