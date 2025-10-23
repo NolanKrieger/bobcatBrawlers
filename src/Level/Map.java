@@ -339,17 +339,18 @@ public abstract class Map {
     public void setAdjustCamera(boolean adjustCamera) {
         this.adjustCamera = adjustCamera;
     }
-
     public void update(Player player) {
+        update(player, null);
+    }
+    public void update(Player player, Level.Player2 player2) {
         if (adjustCamera) {
             adjustMovementY(player);
             adjustMovementX(player);
         }
         camera.update(player);
         int dtMs = 16;
-
         for (ProjectileAttack p : new java.util.ArrayList<>(projectileAttacks)) {
-            p.update(dtMs, this, player);
+            p.update(dtMs, this, player, player2);
         }
         projectileAttacks.removeIf(p -> !p.isAlive());
         for (MeleeAttack m : new java.util.ArrayList<>(meleeAttacks)) {

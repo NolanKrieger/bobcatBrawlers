@@ -85,7 +85,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         switch (p1Index) {
             case 0: player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
        //     case 1: player = new Nicolini(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break; // replace later with Nicolini
-            case 2: player = new Boomer(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
+         //   case 2: player = new Boomer(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
           //  case 3: player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
          //   case 4: player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
 //case 5: player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
@@ -97,7 +97,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         switch (p2Index) {
             case 0: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
          //   case 1: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break; // replace later with Nicolini2 etc.
-            case 2: player2 = new Boomer2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
+        //    case 2: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
         //    case 3: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
        //    case 4: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
        //     case 5: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
@@ -133,9 +133,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
             case RUNNING:
                 player.update();
                 player2.update();
-                map.update(player);
-                if (hurtFlashTimerP1 > 0) hurtFlashTimerP1 = Math.max(0, hurtFlashTimerP1 - 16);
-                if (hurtFlashTimerP1 > 0) hurtFlashTimerP1 = Math.max(0, hurtFlashTimerP1 - 16);
+                map.update(player, player2);
                 // decrement hurt flash timers
                 if (hurtFlashTimerP1 > 0) hurtFlashTimerP1 = Math.max(0, hurtFlashTimerP1 - 16);
                 if (hurtFlashTimerP2 > 0) hurtFlashTimerP2 = Math.max(0, hurtFlashTimerP2 - 16);
@@ -176,52 +174,54 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 // --- Player 1 ---
                 player.draw(graphicsHandler);
                 if (player != null) {
+                    // choose the overlay image based on how much damage the player has taken
                     BufferedImage img1 = p1Default;
-                    if (player != null) {
-                        // map player's health to one of the 10 overlay images so each hit advances one image
-                        int health = player.getHealth();
-                        int maxHealth = player.getMaxHealth();
-                        int idx1 = -1;
-                        if (maxHealth > 0) {
-                            //maxHealth - health
-                            int damageTaken = Math.max(0, Math.min(p1JumpImages.length, maxHealth - health));
-                            if (damageTaken > 0) {
-                                idx1 = damageTaken - 1;
-                            }
-                        }
-                        if (idx1 >= 0 && idx1 < p1JumpImages.length && p1JumpImages[idx1] != null) {
-                            img1 = p1JumpImages[idx1];
+                    int health = player.getHealth();
+                    int maxHealth = player.getMaxHealth();
+
+                    // damageTaken ranges from 0..p1JumpImages.length
+                    int damageTaken = 0;
+                    if (maxHealth > 0) {
+                        damageTaken = Math.max(0, Math.min(p1JumpImages.length, maxHealth - health));
+                    }
+                    if (damageTaken > 0) {
+                        int idx = damageTaken - 1;
+                        if (idx >= 0 && idx < p1JumpImages.length && p1JumpImages[idx] != null) {
+                            img1 = p1JumpImages[idx];
                         }
                     }
+
+                    // draw the chosen image above the player
                     if (img1 != null) {
                         int screenX = Math.round(player.getX() - map.getCamera().getX());
                         int screenY = Math.round(player.getY() - map.getCamera().getY());
                         int imgX = screenX + (player.getWidth() - img1.getWidth()) / 2;
                         int imgY = screenY - img1.getHeight() - 4;
                         graphicsHandler.drawImage(img1, imgX, imgY);
-                        // draw hurt flash overlay if active
+
+                        // hurt flash overlay (brief red flash when onHurt is triggered)
                         if (hurtFlashTimerP1 > 0) {
                             int alpha = Math.round(255f * (hurtFlashTimerP1 / (float) HURT_FLASH_MS));
-                            if (alpha < 0) alpha = 0; if (alpha > 255) alpha = 255;
+                            alpha = Math.max(0, Math.min(255, alpha));
                             try {
                                 graphicsHandler.drawFilledRectangle(imgX, imgY, img1.getWidth(), img1.getHeight(), new Color(255, 0, 0, alpha));
                             } catch (Exception ignored) {
                                 graphicsHandler.drawFilledRectangle(imgX, imgY, img1.getWidth(), img1.getHeight(), new Color(255, 0, 0));
                             }
                         }
-                        // draw health tint based on current health (green -> red)
+
+                        // subtle health tint: green when full, shifting to red as health decreases
                         try {
-                            int health = player.getHealth();
-                            int maxHealth = player.getMaxHealth();
                             float t = 0f;
-                            if (maxHealth > 0) t = 1f - (health / (float) maxHealth); // 0 = full (green), 1 = empty (red)
+                            if (maxHealth > 0) t = 1f - (health / (float) maxHealth); // 0.0 = full, 1.0 = empty
                             t = Math.max(0f, Math.min(1f, t));
                             int r = Math.round(255 * t);
                             int g = Math.round(255 * (1f - t));
-                            int a = Math.round(120 * t); // alpha stronger when lower health
-                            if (a < 30) a = 30; // minimum subtle tint
+                            int a = Math.round(120 * t); // stronger tint at low health
+                            if (a < 30) a = 30; // keep a minimum subtle tint
                             graphicsHandler.drawFilledRectangle(imgX, imgY, img1.getWidth(), img1.getHeight(), new Color(r, g, 0, a));
                         } catch (Exception ignored) {
+                            // fallback: do nothing if Color with alpha isn't supported
                         }
                     }
                 }
