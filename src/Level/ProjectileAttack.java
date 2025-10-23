@@ -1,6 +1,7 @@
 package Level;
 
 import GameObject.Rectangle;
+import GameObject.GameObject;
 import Engine.GraphicsHandler;
 import java.awt.Color;
 
@@ -14,8 +15,9 @@ public class ProjectileAttack {
     private int ageMs = 0;
     private boolean alive = true;
     private boolean fromPlayer;
+    private GameObject owner; // which player fired this projectile (null if from enemy)
 
-    public ProjectileAttack(float x, float y, float vx, float vy, int damage, int lifeMs, boolean fromPlayer) {
+    public ProjectileAttack(float x, float y, float vx, float vy, int damage, int lifeMs, boolean fromPlayer, GameObject owner) {
         this.x = x;
         this.y = y;
         this.vx = vx;
@@ -23,8 +25,9 @@ public class ProjectileAttack {
         this.damage = damage;
         this.lifeMs = lifeMs;
         this.fromPlayer = fromPlayer;
+        this.owner = owner;
     }
-    public void update(int dtMs, Map map, Player player) {
+    public void update(int dtMs, Map map, Player player, Level.Player2 player2) {
         if (!alive) return;
 
         x += vx * dtMs / 1000f;
@@ -56,11 +59,40 @@ public class ProjectileAttack {
             if (Engine.Debug.ENABLED) System.out.println("DEBUG: Projectile died on tile collision at x=" + x + " y=" + y);
             return;
         }
-        if (!fromPlayer && player != null) {
-            Rectangle projRect = new Rectangle(x, y, width, height);
-            if (projRect.intersects(player.getBounds())) {
-                if (Engine.Debug.ENABLED) System.out.println("DEBUG: Projectile hit player at x=" + x + " y=" + y + " dmg=" + damage);
+        Rectangle projRect = new Rectangle(x, y, width, height);
+        // If projectile is from a player, it should hit the other player (not its owner)
+        if (fromPlayer) {
+            if (owner != null) {
+                // owner is player (player1)
+                if (owner == player && player2 != null) {
+                    if (projRect.intersects(player2.getBounds())) {
+                        if (Engine.Debug.ENABLED) System.out.println("DEBUG: Projectile from player hit player2 at x=" + x + " y=" + y + " dmg=" + damage);
+                        player2.damage(damage);
+                        alive = false;
+                        return;
+                    }
+                }
+                // owner is player2
+                else if (owner == player2 && player != null) {
+                    if (projRect.intersects(player.getBounds())) {
+                        if (Engine.Debug.ENABLED) System.out.println("DEBUG: Projectile from player hit player at x=" + x + " y=" + y + " dmg=" + damage + " healthBefore=" + player.getHealth());
+                        player.damage(damage);
+                        alive = false;
+                        return;
+                    }
+                }
+            }
+        } else {
+            // from enemy: hit whichever player it intersects
+            if (player != null && projRect.intersects(player.getBounds())) {
+                if (Engine.Debug.ENABLED) System.out.println("DEBUG: Enemy projectile hit player at x=" + x + " y=" + y + " dmg=" + damage + " healthBefore=" + player.getHealth());
                 player.damage(damage);
+                alive = false;
+                return;
+            }
+            if (player2 != null && projRect.intersects(player2.getBounds())) {
+                if (Engine.Debug.ENABLED) System.out.println("DEBUG: Enemy projectile hit player2 at x=" + x + " y=" + y + " dmg=" + damage + " healthBefore=" + player2.getHealth());
+                player2.damage(damage);
                 alive = false;
                 return;
             }
