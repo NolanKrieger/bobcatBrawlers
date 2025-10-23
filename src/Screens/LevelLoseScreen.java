@@ -1,5 +1,6 @@
 package Screens;
 
+import Level.Player;
 import Engine.*;
 import SpriteFont.SpriteFont;
 
@@ -14,13 +15,23 @@ public class LevelLoseScreen extends Screen {
 
     public LevelLoseScreen(PlayLevelScreen playLevelScreen) {
         this.playLevelScreen = playLevelScreen;
-        initialize();
     }
 
     @Override
     public void initialize() {
+        int player1Health = playLevelScreen.getPlayer().getHealth();
+        int player2Health = playLevelScreen.getPlayer2().getHealth();
         
-        loseMessage = new SpriteFont("You lose!", 520, 300, "Arial", 30, Color.white);
+        
+        
+        if (player1Health > 0) {
+            loseMessage = new SpriteFont("Player 2 Loses! Player 1 Wins!", 420, 300, "Arial", 30, Color.white);
+        } else if (player2Health > 0) {
+            loseMessage = new SpriteFont("Player 1 Loses! Player 2 Wins!", 420, 300, "Arial", 30, Color.white);
+        } else {
+            loseMessage = new SpriteFont("You lose!", 520, 300, "Arial", 30, Color.white);
+        }
+        
         instructions = new SpriteFont("Press Space to try again or Escape to go back to the main menu", 320, 330,"Arial", 20, Color.white);
         keyLocker.lockKey(Key.SPACE);
         keyLocker.lockKey(Key.ESC);

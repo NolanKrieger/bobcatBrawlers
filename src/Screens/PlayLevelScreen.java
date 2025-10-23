@@ -303,6 +303,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     public void onDeath() {
         if (playLevelScreenState != PlayLevelScreenState.LEVEL_LOSE) {
             playLevelScreenState = PlayLevelScreenState.LEVEL_LOSE;
+            levelLoseScreen.initialize();
         }
     }
 
@@ -326,6 +327,14 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
 
     public void goBackToMenu() {
         screenCoordinator.setGameState(GameState.MENU);
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public Player2 getPlayer2() {
+        return player2;
     }
 
     // This enum represents the different states this screen can be in

@@ -66,6 +66,8 @@ public abstract class Player extends GameObject {
         levelState = LevelState.RUNNING;
     }
 
+    boolean win = true;
+
     public void update() {
         moveAmountX = 0;
         moveAmountY = 0;
@@ -111,6 +113,8 @@ public abstract class Player extends GameObject {
             if (this.getY() > map.getEndBoundY()) {
             if (levelState != LevelState.PLAYER_DEAD) {
                 this.levelState = LevelState.PLAYER_DEAD;
+                health = 0;
+                win = false;
                 System.out.println("Player has died by falling out of the level.");
                 
                 for (PlayerListener listener : listeners) {
@@ -133,7 +137,11 @@ public abstract class Player extends GameObject {
         // if player has lost level
         else if (levelState == LevelState.PLAYER_DEAD) {
             updatePlayerDead();
+            win = false;
         }
+    }
+    public boolean winner(){
+        return win;
     }
 
     // add gravity to player, which is a downward force
@@ -368,6 +376,7 @@ public abstract class Player extends GameObject {
         }
         if (health == 0) {
             levelState = LevelState.PLAYER_DEAD;
+            win = false;
             System.out.println("Player died");
             for (PlayerListener listener : listeners) {
                 listener.onDeath();
