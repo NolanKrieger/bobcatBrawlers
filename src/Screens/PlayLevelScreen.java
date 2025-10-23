@@ -83,9 +83,9 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         int p2Index = CharacterChooseScreen2.player2CharacterIndex;
         
         switch (p1Index) {
-            case 0: player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
+            case 0: player = new AlexFighter(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
        //     case 1: player = new Nicolini(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break; // replace later with Nicolini
-         //   case 2: player = new Boomer(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
+            case 2: player = new Boomer(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
           //  case 3: player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
          //   case 4: player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
 //case 5: player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
@@ -95,9 +95,9 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         player.addListener(this);
         
         switch (p2Index) {
-            case 0: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
+            case 0: player2 = new AlexFighter2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
          //   case 1: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break; // replace later with Nicolini2 etc.
-        //    case 2: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
+            case 2: player2 = new Boomer2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
         //    case 3: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
        //    case 4: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
        //     case 5: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
