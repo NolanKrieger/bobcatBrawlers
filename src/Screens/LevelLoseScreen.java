@@ -25,9 +25,9 @@ public class LevelLoseScreen extends Screen {
         
         
         if (player1Health > 0) {
-            loseMessage = new SpriteFont("Player 2 Loses! Player 1 Wins!", 420, 300, "Arial", 30, Color.white);
+            loseMessage = new SpriteFont("Player 1 Wins!", 420, 300, "Arial", 30, Color.white);
         } else if (player2Health > 0) {
-            loseMessage = new SpriteFont("Player 1 Loses! Player 2 Wins!", 420, 300, "Arial", 30, Color.white);
+            loseMessage = new SpriteFont("Player 2 Wins!", 420, 300, "Arial", 30, Color.white);
         } else {
             loseMessage = new SpriteFont("You lose!", 520, 300, "Arial", 30, Color.white);
         }
