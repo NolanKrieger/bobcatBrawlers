@@ -48,6 +48,8 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     private final int HURT_FLASH_MS = 400;
     // Audio player for background music in this level
     private AudioPlayer bgMusicPlayer;
+    // Audio player for lose sound effect
+    private AudioPlayer loseSoundPlayer;
 
     public PlayLevelScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
@@ -174,10 +176,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
             // wait on level lose screen to make a decision (either resets level or sends player back to main menu)
             case LEVEL_LOSE:
                 levelLoseScreen.update();
-                // stop music when player loses
-                if (playLevelScreenState == PlayLevelScreenState.LEVEL_LOSE) {
-                    stopMusic();
-                }
+                // keep the lose sound playing; do not stop sounds each frame here
                 break;
         }
     }
@@ -320,6 +319,14 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     public void onDeath() {
         if (playLevelScreenState != PlayLevelScreenState.LEVEL_LOSE) {
             playLevelScreenState = PlayLevelScreenState.LEVEL_LOSE;
+            // stop level background music and play death sound
+            stopMusic();
+            try {
+                loseSoundPlayer = new AudioPlayer("Resources/Sounds/Death.wav");
+                loseSoundPlayer.play();
+            } catch (Exception e) {
+                System.out.println("Failed to play lose sound: " + e.getMessage());
+            }
         }
     }
 
@@ -346,6 +353,11 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 bgMusicPlayer.stop();
                 bgMusicPlayer.close();
                 bgMusicPlayer = null;
+            }
+            if (loseSoundPlayer != null) {
+                loseSoundPlayer.stop();
+                loseSoundPlayer.close();
+                loseSoundPlayer = null;
             }
         } catch (Exception ignored) {}
     }
