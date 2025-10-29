@@ -98,10 +98,14 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         int p1Index = CharacterChooseScreen2.player1CharacterIndex;
         int p2Index = CharacterChooseScreen2.player2CharacterIndex;
         
-        switch (p1Index) {
-            case 0: player = new AlexFighter(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
-       //     case 1: player = new Nicolini(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break; // replace later with Nicolini
-            case 2: player = new Boomer(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
+    // Moving the player 2 start position to the right side of the level
+    float p1StartX = map.getPlayerStartPosition().x;
+    float p1StartY = map.getPlayerStartPosition().y;
+    float p2X = Math.max(0, map.getEndBoundX() - 500); 
+       switch (p1Index) {
+          case 0: player = new AlexFighter(p1StartX, p1StartY); break;
+      //     case 1: player = new Nicolini(p1StartX, p1StartY); break; // replace later with Nicolini
+          case 2: player = new Boomer(p1StartX, p1StartY); break;
           //  case 3: player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
          //   case 4: player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
 //case 5: player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
@@ -111,9 +115,10 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         player.addListener(this);
         
         switch (p2Index) {
-            case 0: player2 = new AlexFighter2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
+            // place player2 on the opposite side of the level (right side)
+            case 0: player2 = new AlexFighter2(p2X, p1StartY); break;
          //   case 1: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break; // replace later with Nicolini2 etc.
-            case 2: player2 = new Boomer2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
+            case 2: player2 = new Boomer2(p2X - 50, p1StartY); break;
         //    case 3: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
        //    case 4: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
        //     case 5: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
