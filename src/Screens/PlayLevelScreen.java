@@ -15,6 +15,7 @@ import Maps.QuadMap;
 import Maps.TestMap;
 import java.awt.image.BufferedImage;
 import java.awt.Color;
+import java.awt.Font;
 import Engine.ImageLoader;
 import Players.*;
 import GameObject.GameObject;
@@ -46,6 +47,13 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     private int hurtFlashTimerP1 = 0;
     private int hurtFlashTimerP2 = 0;
     private final int HURT_FLASH_MS = 400;
+    private final int COOLDOWN_CYCLE_MS = 10000;
+    private final int DISABLE_DURATION_MS = 5000;
+    private int cooldownTimer = 0;
+    private int disableTimer = 0;
+    private int disabledPlayer = 0;
+    private int lastDisabledPlayer = 0;
+    private boolean alternate = true;
     // Audio player for background music in this level
     private AudioPlayer bgMusicPlayer;
     // Audio player for lose sound effect
@@ -148,6 +156,35 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         switch (playLevelScreenState) {
             // if level is "running" update player and map to keep game logic for the platformer level going
             case RUNNING:
+                // Scheduler for periodic attack disable (runs before players update so effect is immediate)
+                cooldownTimer += 16; // frame delta approximation (matches other timers)
+                if (disabledPlayer == 0) {
+                    if (cooldownTimer >= COOLDOWN_CYCLE_MS) {
+                        cooldownTimer = 0;
+                        int pick;
+                        if (alternate) {
+                            pick = (lastDisabledPlayer == 1) ? 2 : 1;
+                            lastDisabledPlayer = pick;
+                        } else {
+                            pick = (Math.random() < 0.5) ? 1 : 2;
+                        }
+                        disabledPlayer = pick;
+                        disableTimer = DISABLE_DURATION_MS;
+                        if (disabledPlayer == 1 && player != null) player.setAttacksEnabled(false);
+                        else if (disabledPlayer == 2 && player2 != null) player2.setAttacksEnabled(false);
+                        if (Engine.Debug.ENABLED) System.out.println("DEBUG: Disabled attacks for player" + disabledPlayer);
+                    }
+                } else {
+                    disableTimer -= 16;
+                    if (disableTimer <= 0) {
+                        if (disabledPlayer == 1 && player != null) player.setAttacksEnabled(true);
+                        else if (disabledPlayer == 2 && player2 != null) player2.setAttacksEnabled(true);
+                        if (Engine.Debug.ENABLED) System.out.println("DEBUG: Re-enabled attacks for player" + disabledPlayer);
+                        disabledPlayer = 0;
+                        disableTimer = 0;
+                    }
+                }
+
                 player.update();
                 player2.update();
                 map.update(player, player2);
@@ -293,6 +330,21 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                         } catch (Exception ignored) {
                         }
                     }
+                }
+                // show a small text if this player's attacks are currently disabled
+                if (disabledPlayer == 1 && player != null) { // for player 1
+                    int screenXp1 = Math.round(player.getX() - map.getCamera().getX());
+                    int screenYp1 = Math.round(player.getY() - map.getCamera().getY());
+                    int txtX1 = screenXp1;
+                    int txtY1 = screenYp1 - 10;
+                    graphicsHandler.drawString("ATTACKS OFF", txtX1, txtY1, new Font("Arial", Font.BOLD, 12), new Color(255, 200, 0));
+                }
+                if (disabledPlayer == 2 && player2 != null) { // for player 2
+                    int screenXp2 = Math.round(player2.getX() - map.getCamera().getX());
+                    int screenYp2 = Math.round(player2.getY() - map.getCamera().getY());
+                    int txtX2 = screenXp2;
+                    int txtY2 = screenYp2 - 10;
+                    graphicsHandler.drawString("ATTACKS OFF", txtX2, txtY2, new Font("Arial", Font.BOLD, 12), new Color(255, 200, 0));
                 }
                 break;
 

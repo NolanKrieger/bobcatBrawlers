@@ -52,6 +52,14 @@ public abstract class Player2 extends GameObject {
     // flags
     protected boolean isInvincible = false; // if true, player cannot be hurt by enemies (good for testing)
     // health system
+    protected boolean attacksEnabled = true;
+    public void setAttacksEnabled(boolean enabled) {
+        this.attacksEnabled = enabled;
+        if (!enabled) {
+            keyLocker.unlockKey(ATTACK_KEY);
+        }
+    }
+    public boolean isAttacksEnabled() { return attacksEnabled; }
     protected int maxHealth = 5; // number of hits the player can take before dying
     protected int health = maxHealth;
     
@@ -94,7 +102,7 @@ public abstract class Player2 extends GameObject {
             updateLockedKeys();
 
             // attack input for player 2: spawn a projectile when attack key is pressed
-            if (Keyboard.isKeyDown(ATTACK_KEY) && !keyLocker.isKeyLocked(ATTACK_KEY)) {
+            if (attacksEnabled && Keyboard.isKeyDown(ATTACK_KEY) && !keyLocker.isKeyLocked(ATTACK_KEY)) {
                 keyLocker.lockKey(ATTACK_KEY);
                 int projW = 8; int projH = 8;
                 float speed = 240f;

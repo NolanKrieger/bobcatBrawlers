@@ -342,6 +342,7 @@ public abstract class Map {
     public void update(Player player) {
         update(player, null);
     }
+
     public void update(Player player, Level.Player2 player2) {
         if (adjustCamera) {
             adjustMovementY(player);
