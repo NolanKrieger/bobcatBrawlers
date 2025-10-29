@@ -60,6 +60,12 @@ public abstract class Player2 extends GameObject {
         }
     }
     public boolean isAttacksEnabled() { return attacksEnabled; }
+    // press-to-disable support for Player2
+    protected int disablePressCount = 0;
+    protected boolean lastAttackKeyDown = false; // detect key-down edges
+    protected int forcedDisableMs = 0; // remaining ms for forced disable
+    protected static final int DISABLE_PRESS_LIMIT = 5;
+    protected static final int FORCED_DISABLE_DURATION_MS = 5000; // 8 seconds
     protected int maxHealth = 5; // number of hits the player can take before dying
     protected int health = maxHealth;
     
@@ -100,6 +106,27 @@ public abstract class Player2 extends GameObject {
             handlePlayerAnimation();
 
             updateLockedKeys();
+
+            // Handle press-to-disable (count key-down edges of attack key) for Player2
+            boolean attackKeyDownNowP2 = Keyboard.isKeyDown(ATTACK_KEY);
+            if (attackKeyDownNowP2 && !lastAttackKeyDown) {
+                disablePressCount++;
+                if (Engine.Debug.ENABLED) System.out.println("DEBUG: Player2 disablePressCount=" + disablePressCount);
+                if (disablePressCount >= DISABLE_PRESS_LIMIT) {
+                    setAttacksEnabled(false);
+                    forcedDisableMs = FORCED_DISABLE_DURATION_MS;
+                    disablePressCount = 0;
+                    if (Engine.Debug.ENABLED) System.out.println("DEBUG: Player2 attacks disabled by press-limit");
+                }
+            }
+            lastAttackKeyDown = attackKeyDownNowP2;
+            if (forcedDisableMs > 0) {
+                forcedDisableMs = Math.max(0, forcedDisableMs - 16);
+                if (forcedDisableMs == 0) {
+                    setAttacksEnabled(true);
+                    if (Engine.Debug.ENABLED) System.out.println("DEBUG: Player2 forced-disable expired; attacks re-enabled");
+                }
+            }
 
             // attack input for player 2: spawn a projectile when attack key is pressed
             if (attacksEnabled && Keyboard.isKeyDown(ATTACK_KEY) && !keyLocker.isKeyLocked(ATTACK_KEY)) {

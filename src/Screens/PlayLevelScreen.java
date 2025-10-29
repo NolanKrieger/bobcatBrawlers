@@ -47,13 +47,17 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     private int hurtFlashTimerP1 = 0;
     private int hurtFlashTimerP2 = 0;
     private final int HURT_FLASH_MS = 400;
-    private final int COOLDOWN_CYCLE_MS = 10000;
+    // automatic scheduler disabled when using press-to-disable; set very large to avoid triggering
+    private final int COOLDOWN_CYCLE_MS = Integer.MAX_VALUE;
     private final int DISABLE_DURATION_MS = 5000;
     private int cooldownTimer = 0;
     private int disableTimer = 0;
     private int disabledPlayer = 0;
     private int lastDisabledPlayer = 0;
     private boolean alternate = true;
+    // track previous attacksEnabled state to detect transitions
+    private boolean prevP1AttacksEnabled = true;
+    private boolean prevP2AttacksEnabled = true;
     // Audio player for background music in this level
     private AudioPlayer bgMusicPlayer;
     // Audio player for lose sound effect
@@ -126,6 +130,9 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         }
         player2.setMap(map);
         player2.addListener(this);
+    // initialize previous attack-enabled flags
+    prevP1AttacksEnabled = player.isAttacksEnabled();
+    prevP2AttacksEnabled = player2.isAttacksEnabled();
         // Debug spawn removed: projectiles will be spawned by player input instead.
         // screens
         levelClearedScreen = new LevelClearedScreen();
@@ -190,8 +197,29 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                     }
                 }
 
+                // update player 1 and detect if they just became unable to attack; heal the same player when disabled
                 player.update();
+                if (player != null) {
+                    boolean now = player.isAttacksEnabled();
+                    if (prevP1AttacksEnabled && !now) {
+                        // player1 just became unable to attack — heal player1 by 2
+                        player.heal(2);
+                        if (Engine.Debug.ENABLED) System.out.println("DEBUG: Player1 disabled -> healed Player1 by 2");
+                    }
+                    prevP1AttacksEnabled = now;
+                }
+
+                // update player 2 and detect if they just became unable to attack; heal the same player when disabled
                 player2.update();
+                if (player2 != null) {
+                    boolean now2 = player2.isAttacksEnabled();
+                    if (prevP2AttacksEnabled && !now2) {
+                        // player2 just became unable to attack — heal player2 by 2
+                        player2.heal(2);
+                        if (Engine.Debug.ENABLED) System.out.println("DEBUG: Player2 disabled -> healed Player2 by 2");
+                    }
+                    prevP2AttacksEnabled = now2;
+                }
                 map.update(player, player2);
                 // decrement hurt flash timers
                 if (hurtFlashTimerP1 > 0) hurtFlashTimerP1 = Math.max(0, hurtFlashTimerP1 - 16);
@@ -337,19 +365,27 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                     }
                 }
                 // show a small text if this player's attacks are currently disabled
-                if (disabledPlayer == 1 && player != null) { // for player 1
+                if (player != null && !player.isAttacksEnabled()) { // for player 1 (show when player attacks are disabled)
                     int screenXp1 = Math.round(player.getX() - map.getCamera().getX());
                     int screenYp1 = Math.round(player.getY() - map.getCamera().getY());
-                    int txtX1 = screenXp1;
-                    int txtY1 = screenYp1 - 10;
-                    graphicsHandler.drawString("ATTACKS OFF", txtX1, txtY1, new Font("Arial", Font.BOLD, 12), new Color(255, 200, 0));
+                    Font offFont = new Font("Arial Black", Font.BOLD, 28);
+                    String offText = "ATTACKS OFF";
+                    int centerX1 = screenXp1 + player.getWidth() / 2;
+                    int textWidth1 = graphicsHandler.getGraphics().getFontMetrics(offFont).stringWidth(offText);
+                    int txtX1c = centerX1 - textWidth1 / 2;
+                    int txtY1c = screenYp1 - 12;
+                    graphicsHandler.drawString(offText, txtX1c, txtY1c, offFont, Color.BLACK);
                 }
-                if (disabledPlayer == 2 && player2 != null) { // for player 2
+                if (player2 != null && !player2.isAttacksEnabled()) { // for player 2 (show when player2 attacks are disabled)
                     int screenXp2 = Math.round(player2.getX() - map.getCamera().getX());
                     int screenYp2 = Math.round(player2.getY() - map.getCamera().getY());
-                    int txtX2 = screenXp2;
-                    int txtY2 = screenYp2 - 10;
-                    graphicsHandler.drawString("ATTACKS OFF", txtX2, txtY2, new Font("Arial", Font.BOLD, 12), new Color(255, 200, 0));
+                    Font offFont = new Font("Arial Black", Font.BOLD, 28);
+                    String offText = "ATTACKS OFF";
+                    int centerX2 = screenXp2 + player2.getWidth() / 2;
+                    int textWidth2 = graphicsHandler.getGraphics().getFontMetrics(offFont).stringWidth(offText);
+                    int txtX2c = centerX2 - textWidth2 / 2;
+                    int txtY2c = screenYp2 - 12;
+                    graphicsHandler.drawString(offText, txtX2c, txtY2c, offFont, Color.BLACK);
                 }
                 break;
 

@@ -36,6 +36,7 @@ public abstract class Player extends GameObject {
     protected AirGroundState airGroundState;
     protected AirGroundState previousAirGroundState;
     protected LevelState levelState;
+    
 
    
     protected ArrayList<PlayerListener> listeners = new ArrayList<>();
@@ -61,6 +62,12 @@ public abstract class Player extends GameObject {
         }
     }
     public boolean isAttacksEnabled() { return attacksEnabled; }
+    // press-to-disable support
+    protected int disablePressCount = 0;
+    protected boolean lastAttackKeyDown = false; // detect key-down edges
+    protected int forcedDisableMs = 0; // remaining ms for forced disable
+    protected static final int DISABLE_PRESS_LIMIT = 5;
+    protected static final int FORCED_DISABLE_DURATION_MS = 5000; // 8 seconds
     protected int maxHealth = 5; // number of hits the player can take before dying
     protected int health = maxHealth;
 
@@ -85,6 +92,25 @@ public abstract class Player extends GameObject {
         // if player is currently playing through level (has not won or lost)
         if (levelState == LevelState.RUNNING) {
             applyGravity();
+            boolean attackKeyDownNow = Keyboard.isKeyDown(ATTACK_KEY);
+            if (attackKeyDownNow && !lastAttackKeyDown) {
+                disablePressCount++;
+                if (Engine.Debug.ENABLED) System.out.println("DEBUG: Player disablePressCount=" + disablePressCount);
+                if (disablePressCount >= DISABLE_PRESS_LIMIT) {
+                    setAttacksEnabled(false);
+                    forcedDisableMs = FORCED_DISABLE_DURATION_MS;
+                    disablePressCount = 0;
+                    if (Engine.Debug.ENABLED) System.out.println("DEBUG: Player attacks disabled by press-limit");
+                }
+            }
+            lastAttackKeyDown = attackKeyDownNow;
+            if (forcedDisableMs > 0) {
+                forcedDisableMs = Math.max(0, forcedDisableMs - 16);
+                if (forcedDisableMs == 0) {
+                    setAttacksEnabled(true);
+                    if (Engine.Debug.ENABLED) System.out.println("DEBUG: Player forced-disable expired; attacks re-enabled");
+                }
+            }
 
             // update player's state and current actions, which includes things like determining how much it should move each frame and if its walking or jumping
             do {
