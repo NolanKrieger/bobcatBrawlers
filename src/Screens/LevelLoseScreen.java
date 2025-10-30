@@ -14,7 +14,7 @@ public class LevelLoseScreen extends Screen {
     protected KeyLocker keyLocker = new KeyLocker();
     protected PlayLevelScreen playLevelScreen;
 
-    ScoreboardNew scoreboard = new ScoreboardNew();
+    private static ScoreboardNew scoreboard = new ScoreboardNew();
 
     public LevelLoseScreen(PlayLevelScreen playLevelScreen) {
         this.playLevelScreen = playLevelScreen;
