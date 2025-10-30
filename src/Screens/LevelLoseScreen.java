@@ -3,15 +3,18 @@ package Screens;
 import Level.Player;
 import Engine.*;
 import SpriteFont.SpriteFont;
-
+import Game.ScoreboardNew;
 import java.awt.*;
 
 // This is the class for the level lose screen
 public class LevelLoseScreen extends Screen {
     protected SpriteFont loseMessage;
+    protected SpriteFont scoreboardDisplay;
     protected SpriteFont instructions;
     protected KeyLocker keyLocker = new KeyLocker();
     protected PlayLevelScreen playLevelScreen;
+
+    ScoreboardNew scoreboard = new ScoreboardNew();
 
     public LevelLoseScreen(PlayLevelScreen playLevelScreen) {
         this.playLevelScreen = playLevelScreen;
@@ -25,14 +28,22 @@ public class LevelLoseScreen extends Screen {
         
         
         if (player1Health > 0) {
+            scoreboard.addPlayer1Win();
             loseMessage = new SpriteFont("Player 1 Wins!", 420, 300, "Arial", 30, Color.white);
+            scoreboardDisplay = new SpriteFont(scoreboard.toString(), 420, 340, "Arial", 30, Color.white);
+            
+
         } else if (player2Health > 0) {
+            scoreboard.addPlayer2Win();
             loseMessage = new SpriteFont("Player 2 Wins!", 420, 300, "Arial", 30, Color.white);
+            scoreboardDisplay = new SpriteFont(scoreboard.toString(), 420, 340, "Arial", 30, Color.white);
+            
         } else {
             loseMessage = new SpriteFont("You lose!", 520, 300, "Arial", 30, Color.white);
+            scoreboardDisplay = null;
         }
         
-        instructions = new SpriteFont("Press Space to try again or Escape to go back to the main menu", 320, 330,"Arial", 20, Color.white);
+        instructions = new SpriteFont("Press Space to try again or Escape to go back to the main menu", 320, 380,"Arial", 20, Color.white);
         keyLocker.lockKey(Key.SPACE);
         keyLocker.lockKey(Key.ESC);
     }
@@ -57,6 +68,9 @@ public class LevelLoseScreen extends Screen {
     public void draw(GraphicsHandler graphicsHandler) {
         graphicsHandler.drawFilledRectangle(0, 0, ScreenManager.getScreenWidth(), ScreenManager.getScreenHeight(), Color.black);
         loseMessage.draw(graphicsHandler);
+        if (scoreboardDisplay != null) {
+            scoreboardDisplay.draw(graphicsHandler);
+        }
         instructions.draw(graphicsHandler);
     }
 }
