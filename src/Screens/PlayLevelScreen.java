@@ -368,7 +368,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 if (player != null && !player.isAttacksEnabled()) { // for player 1 (show when player attacks are disabled)
                     int screenXp1 = Math.round(player.getX() - map.getCamera().getX());
                     int screenYp1 = Math.round(player.getY() - map.getCamera().getY());
-                    Font offFont = new Font("Arial Black", Font.BOLD, 28);
+                    Font offFont = new Font("Arial Black", Font.BOLD, 12);
                     String offText = "ATTACKS OFF";
                     int centerX1 = screenXp1 + player.getWidth() / 2;
                     int textWidth1 = graphicsHandler.getGraphics().getFontMetrics(offFont).stringWidth(offText);
@@ -379,7 +379,7 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 if (player2 != null && !player2.isAttacksEnabled()) { // for player 2 (show when player2 attacks are disabled)
                     int screenXp2 = Math.round(player2.getX() - map.getCamera().getX());
                     int screenYp2 = Math.round(player2.getY() - map.getCamera().getY());
-                    Font offFont = new Font("Arial Black", Font.BOLD, 28);
+                    Font offFont = new Font("Arial Black", Font.BOLD, 12);
                     String offText = "ATTACKS OFF";
                     int centerX2 = screenXp2 + player2.getWidth() / 2;
                     int textWidth2 = graphicsHandler.getGraphics().getFontMetrics(offFont).stringWidth(offText);

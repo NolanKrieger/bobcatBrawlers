@@ -66,9 +66,9 @@ public abstract class Player extends GameObject {
     protected int disablePressCount = 0;
     protected boolean lastAttackKeyDown = false; // detect key-down edges
     protected int forcedDisableMs = 0; // remaining ms for forced disable
-    protected static final int DISABLE_PRESS_LIMIT = 5;
+    protected static final int DISABLE_PRESS_LIMIT = 4;
     protected static final int FORCED_DISABLE_DURATION_MS = 5000; // 8 seconds
-    protected int maxHealth = 5; // number of hits the player can take before dying
+    protected int maxHealth = 6; // number of hits the player can take before dying
     protected int health = maxHealth;
 
     public Player(SpriteSheet spriteSheet, float x, float y, String startingAnimationName) {
