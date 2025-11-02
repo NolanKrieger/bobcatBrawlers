@@ -2,6 +2,7 @@ package Screens;
 
 import Engine.GraphicsHandler;
 import Engine.Screen;
+import Engine.ScreenManager;
 import Game.GameState;
 import Game.ScreenCoordinator;
 import Level.Map;
@@ -387,6 +388,9 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                     int txtY2c = screenYp2 - 12;
                     graphicsHandler.drawString(offText, txtX2c, txtY2c, offFont, Color.BLACK);
                 }
+                
+                // Draw lives as hearts on the HUD
+                drawLivesHearts(graphicsHandler);
                 break;
 
             case LEVEL_COMPLETED:
@@ -467,6 +471,48 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
 
     public Player2 getPlayer2() {
         return player2;
+    }
+
+    private void drawLivesHearts(GraphicsHandler graphicsHandler) {
+        // Get lives from LevelLoseScreen
+        Game.Lives lives = LevelLoseScreen.getLives();
+        
+        // Heart size and spacing
+        int heartSize = 24;
+        int heartSpacing = 35;
+        int topPadding = 15;
+        int screenWidth = ScreenManager.getScreenWidth();
+        
+        // Draw Player 1 hearts on the left
+        int player1Lives = lives.getPlayer1Lives();
+        for (int i = 0; i < 3; i++) {
+            int x = 15 + (i * heartSpacing);
+            int y = topPadding;
+            
+            if (i < player1Lives) {
+                drawHeart(graphicsHandler, x, y, heartSize, Color.red);
+            } else {
+                drawHeart(graphicsHandler, x, y, heartSize, new Color(50, 50, 50));
+            }
+        }
+        
+        // Draw Player 2 hearts on the right
+        int player2Lives = lives.getPlayer2Lives();
+        for (int i = 0; i < 3; i++) {
+            int x = screenWidth - 125 + (i * heartSpacing);
+            int y = topPadding;
+            
+            if (i < player2Lives) {
+                drawHeart(graphicsHandler, x, y, heartSize, Color.red);
+            } else {
+                drawHeart(graphicsHandler, x, y, heartSize, new Color(50, 50, 50));
+            }
+        }
+    }
+
+    private void drawHeart(GraphicsHandler graphicsHandler, int x, int y, int size, Color color) {
+        // Draw a square heart
+        graphicsHandler.drawFilledRectangle(x, y, size, size, color);
     }
 
     // This enum represents the different states this screen can be in

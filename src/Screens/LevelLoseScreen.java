@@ -22,6 +22,10 @@ public class LevelLoseScreen extends Screen {
         this.playLevelScreen = playLevelScreen;
     }
 
+    public static Lives getLives() {
+        return lives;
+    }
+
     @Override
     public void initialize() {
         int player1Health = playLevelScreen.getPlayer().getHealth();
