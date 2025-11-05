@@ -71,6 +71,16 @@ public abstract class Player extends GameObject {
     protected static final int FORCED_DISABLE_DURATION_MS = 5000; // 8 seconds
     protected int maxHealth = 5; // number of hits the player can take before dying
     protected int health = maxHealth;
+    
+    // Power-up system
+    protected boolean speedBoostActive = false;
+    protected boolean highJumpActive = false;
+    protected int powerUpDurationMs = 0;
+    protected float originalWalkSpeed;
+    protected float originalJumpHeight;
+    protected int selectedPowerUp = 0; // 0 = speed, 1 = high jump
+    protected boolean powerUpSelectionVisible = false;
+    protected int powerUpToggleCooldown = 0;
 
     public Player(SpriteSheet spriteSheet, float x, float y, String startingAnimationName) {
         super(spriteSheet, x, y, startingAnimationName);
@@ -80,6 +90,14 @@ public abstract class Player extends GameObject {
         playerState = PlayerState.STANDING;
         previousPlayerState = playerState;
         levelState = LevelState.RUNNING;
+    }
+    
+    // Initialize original values after subclass constructor sets the actual values
+    public void initializePowerUpSystem() {
+        if (originalWalkSpeed == 0) { // Only initialize once
+            originalWalkSpeed = walkSpeed;
+            originalJumpHeight = jumpHeight;
+        }
     }
 
     boolean win = true;
@@ -91,6 +109,10 @@ public abstract class Player extends GameObject {
         // if player is currently playing through level (has not won or lost)
         if (levelState == LevelState.RUNNING) {
             applyGravity();
+            
+            // Update power-up system
+            updatePowerUps();
+            
             boolean attackKeyDownNow = Keyboard.isKeyDown(ATTACK_KEY);
             if (attackKeyDownNow && !lastAttackKeyDown) {
                 disablePressCount++;
@@ -542,5 +564,78 @@ public abstract class Player extends GameObject {
     // Expose whether the player is currently in the JUMPING state
     public boolean isJumpingState() {
         return playerState == PlayerState.JUMPING;
+    }
+    
+    // Power-up system methods
+    private void updatePowerUps() {
+        // Initialize original values if not done yet
+        initializePowerUpSystem();
+        
+        // Handle power-up selection toggle cooldown
+        if (powerUpToggleCooldown > 0) {
+            powerUpToggleCooldown -= 16;
+        }
+        
+        // Handle power-up selection (1 and 2 keys when selection is visible)
+        if (powerUpSelectionVisible) {
+            if (Keyboard.isKeyDown(Key.ONE)) {
+                selectedPowerUp = 0; // Speed boost
+                activateSpeedBoost();
+                powerUpSelectionVisible = false;
+            } else if (Keyboard.isKeyDown(Key.TWO)) {
+                selectedPowerUp = 1; // High jump
+                activateHighJump();
+                powerUpSelectionVisible = false;
+            }
+        }
+        
+        // Update active power-ups
+        if (powerUpDurationMs > 0) {
+            powerUpDurationMs -= 16;
+            if (powerUpDurationMs <= 0) {
+                deactivatePowerUps();
+            }
+        }
+    }
+    
+    private void activateSpeedBoost() {
+        if (!speedBoostActive) {
+            speedBoostActive = true;
+            walkSpeed = originalWalkSpeed * 2.0f; // Double speed
+            powerUpDurationMs = 8000; // 8 seconds
+        }
+    }
+    
+    private void activateHighJump() {
+        if (!highJumpActive) {
+            highJumpActive = true;
+            jumpHeight = originalJumpHeight * 1.5f; // 50% higher jump
+            powerUpDurationMs = 8000; // 8 seconds
+        }
+    }
+    
+    private void deactivatePowerUps() {
+        speedBoostActive = false;
+        highJumpActive = false;
+        walkSpeed = originalWalkSpeed;
+        jumpHeight = originalJumpHeight;
+        powerUpDurationMs = 0;
+    }
+    
+    // Getters for power-up state
+    public boolean isPowerUpSelectionVisible() { return powerUpSelectionVisible; }
+    public int getSelectedPowerUp() { return selectedPowerUp; }
+    public boolean isSpeedBoostActive() { return speedBoostActive; }
+    public boolean isHighJumpActive() { return highJumpActive; }
+    public int getPowerUpRemainingMs() { return powerUpDurationMs; }
+    
+    // Method to show power-up selection (called automatically)
+    public void showPowerUpSelection() {
+        powerUpSelectionVisible = true;
+    }
+    
+    // Method to hide power-up selection (called on timeout)
+    public void hidePowerUpSelection() {
+        powerUpSelectionVisible = false;
     }
 }

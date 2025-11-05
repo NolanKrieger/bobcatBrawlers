@@ -70,6 +70,16 @@ public abstract class Player2 extends GameObject {
     protected int maxHealth = 5; // number of hits the player can take before dying
     protected int health = maxHealth;
     
+    // Power-up system
+    protected boolean speedBoostActive = false;
+    protected boolean highJumpActive = false;
+    protected int powerUpDurationMs = 0;
+    protected float originalWalkSpeed;
+    protected float originalJumpHeight;
+    protected int selectedPowerUp = 0; // 0 = speed, 1 = high jump
+    protected boolean powerUpSelectionVisible = false;
+    protected int powerUpToggleCooldown = 0;
+    
     boolean win = true;
 
     public Player2(SpriteSheet spriteSheet, float x, float y, String startingAnimationName) {
@@ -81,6 +91,14 @@ public abstract class Player2 extends GameObject {
         previousPlayerState = playerState;
         levelState = LevelState.RUNNING;
     }
+    
+    // Initialize original values after subclass constructor sets the actual values
+    public void initializePowerUpSystem() {
+        if (originalWalkSpeed == 0) { // Only initialize once
+            originalWalkSpeed = walkSpeed;
+            originalJumpHeight = jumpHeight;
+        }
+    }
 
     public void update() {
         moveAmountX = 0;
@@ -89,6 +107,9 @@ public abstract class Player2 extends GameObject {
         // if player is currently playing through level (has not won or lost)
         if (levelState == LevelState.RUNNING) {
             applyGravity();
+            
+            // Update power-up system
+            updatePowerUps();
 
             // update player's state and current actions, which includes things like determining how much it should move each frame and if its walking or jumping
             do {
@@ -566,5 +587,77 @@ public abstract class Player2 extends GameObject {
     public void setGravity(float gravity) {
         this.gravity = gravity;
     }
-
+    
+    // Power-up system methods
+    private void updatePowerUps() {
+        // Initialize original values if not done yet
+        initializePowerUpSystem();
+        
+        // Handle power-up selection toggle cooldown
+        if (powerUpToggleCooldown > 0) {
+            powerUpToggleCooldown -= 16;
+        }
+        
+        // Handle power-up selection (7 and 8 keys when selection is visible)
+        if (powerUpSelectionVisible) {
+            if (Keyboard.isKeyDown(Key.SEVEN)) {
+                selectedPowerUp = 0; // Speed boost
+                activateSpeedBoost();
+                powerUpSelectionVisible = false;
+            } else if (Keyboard.isKeyDown(Key.EIGHT)) {
+                selectedPowerUp = 1; // High jump
+                activateHighJump();
+                powerUpSelectionVisible = false;
+            }
+        }
+        
+        // Update active power-ups
+        if (powerUpDurationMs > 0) {
+            powerUpDurationMs -= 16;
+            if (powerUpDurationMs <= 0) {
+                deactivatePowerUps();
+            }
+        }
+    }
+    
+    private void activateSpeedBoost() {
+        if (!speedBoostActive) {
+            speedBoostActive = true;
+            walkSpeed = originalWalkSpeed * 2.0f; // Double speed
+            powerUpDurationMs = 8000; // 8 seconds
+        }
+    }
+    
+    private void activateHighJump() {
+        if (!highJumpActive) {
+            highJumpActive = true;
+            jumpHeight = originalJumpHeight * 1.5f; // 50% higher jump
+            powerUpDurationMs = 8000; // 8 seconds
+        }
+    }
+    
+    private void deactivatePowerUps() {
+        speedBoostActive = false;
+        highJumpActive = false;
+        walkSpeed = originalWalkSpeed;
+        jumpHeight = originalJumpHeight;
+        powerUpDurationMs = 0;
+    }
+    
+    // Getters for power-up state
+    public boolean isPowerUpSelectionVisible() { return powerUpSelectionVisible; }
+    public int getSelectedPowerUp() { return selectedPowerUp; }
+    public boolean isSpeedBoostActive() { return speedBoostActive; }
+    public boolean isHighJumpActive() { return highJumpActive; }
+    public int getPowerUpRemainingMs() { return powerUpDurationMs; }
+    
+    // Method to show power-up selection (called automatically)
+    public void showPowerUpSelection() {
+        powerUpSelectionVisible = true;
+    }
+    
+    // Method to hide power-up selection (called on timeout)
+    public void hidePowerUpSelection() {
+        powerUpSelectionVisible = false;
+    }
 }
