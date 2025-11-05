@@ -86,8 +86,6 @@ public abstract class Player2 extends GameObject {
         moveAmountX = 0;
         moveAmountY = 0;
 
-        
-
         // if player is currently playing through level (has not won or lost)
         if (levelState == LevelState.RUNNING) {
             applyGravity();
@@ -542,6 +540,31 @@ public abstract class Player2 extends GameObject {
         }
         
         projectileLabel.draw(graphicsHandler);
+    }
+
+    // Getters and setters for power-up system
+    public float getWalkSpeed() {
+        return walkSpeed;
+    }
+    
+    public void setWalkSpeed(float walkSpeed) {
+        this.walkSpeed = walkSpeed;
+    }
+    
+    public float getJumpHeight() {
+        return jumpHeight;
+    }
+    
+    public void setJumpHeight(float jumpHeight) {
+        this.jumpHeight = jumpHeight;
+    }
+    
+    public float getGravity() {
+        return gravity;
+    }
+    
+    public void setGravity(float gravity) {
+        this.gravity = gravity;
     }
 
 }

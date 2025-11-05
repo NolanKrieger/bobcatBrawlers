@@ -88,8 +88,6 @@ public abstract class Player extends GameObject {
         moveAmountX = 0;
         moveAmountY = 0;
 
-        
-
         // if player is currently playing through level (has not won or lost)
         if (levelState == LevelState.RUNNING) {
             applyGravity();

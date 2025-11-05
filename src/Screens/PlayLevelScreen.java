@@ -5,6 +5,7 @@ import Engine.Screen;
 import Game.GameState;
 import Game.ScreenCoordinator;
 import Level.Map;
+import Level.ProjectileAttack;
 import Engine.AudioPlayer;
 import Level.Player;
 import Level.Player2;
@@ -220,10 +221,16 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                     }
                     prevP2AttacksEnabled = now2;
                 }
-                map.update(player, player2);
+   
                 // decrement hurt flash timers
                 if (hurtFlashTimerP1 > 0) hurtFlashTimerP1 = Math.max(0, hurtFlashTimerP1 - 16);
                 if (hurtFlashTimerP2 > 0) hurtFlashTimerP2 = Math.max(0, hurtFlashTimerP2 - 16);
+
+                // Update projectile types (X and N key handling)
+                ProjectileAttack.updateProjectileTypes();
+
+                // Update map (includes projectiles and collisions)
+                map.update(player, player2);
 
                 // --- Detect "jump start" edges and advance image (max 5) ---
 
@@ -387,6 +394,8 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                     int txtY2c = screenYp2 - 12;
                     graphicsHandler.drawString(offText, txtX2c, txtY2c, offFont, Color.BLACK);
                 }
+            
+                
                 break;
 
             case LEVEL_COMPLETED:
