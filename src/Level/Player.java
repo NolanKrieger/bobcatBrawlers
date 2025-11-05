@@ -7,6 +7,7 @@ import Engine.Keyboard;
 import Game.GameState;
 import GameObject.GameObject;
 import GameObject.SpriteSheet;
+import SpriteFont.SpriteFont;
 import Utils.AirGroundState;
 import Utils.Direction;
 
@@ -515,12 +516,29 @@ public abstract class Player extends GameObject {
         listeners.add(listener);
     }
 
-
-    /*
     public void draw(GraphicsHandler graphicsHandler) {
         super.draw(graphicsHandler);
-        drawBounds(graphicsHandler, new Color(0, 255, 0, 100));
-    } */
+        // drawBounds(graphicsHandler, new Color(0, 255, 0, 100));
+        
+        // Draw current projectile name above Player 1 (use Player 1's projectile type)
+        String projectileName = ProjectileAttack.getPlayer1ProjectileName();
+        SpriteFont projectileLabel = new SpriteFont(projectileName, 
+            getX() + (getWidth() / 2) - (projectileName.length() * 4), // Center the text above player
+            getY() - 20, // Position 20 pixels above player
+            "Arial", 12, Color.BLUE);
+        projectileLabel.setOutlineColor(Color.BLACK);
+        projectileLabel.setOutlineThickness(1);
+        
+        // Adjust position relative to camera (important for moving camera)
+        if (map != null) {
+            projectileLabel.setLocation(
+                projectileLabel.getX() - map.getCamera().getX(),
+                projectileLabel.getY() - map.getCamera().getY()
+            );
+        }
+        
+        projectileLabel.draw(graphicsHandler);
+    }
 
     
     // Expose whether the player is currently in the JUMPING state
