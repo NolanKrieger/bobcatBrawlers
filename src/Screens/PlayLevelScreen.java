@@ -42,9 +42,13 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     private BufferedImage[] p1JumpImages = new BufferedImage[4];
     
 
-    // // Player 2 Health bar
+    // Player 2 Health bar
     private BufferedImage p2Default;
     private BufferedImage[] p2JumpImages = new BufferedImage[4];
+    
+    // Hearts for lives display
+    private BufferedImage heartImage;
+    
     private int hurtFlashTimerP1 = 0;
     private int hurtFlashTimerP2 = 0;
     private final int HURT_FLASH_MS = 400;
@@ -162,6 +166,9 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         for (int i = 0; i < p2JumpImages.length; i++) {
             p2JumpImages[i] = safeLoadImage("PlayerHealthPlayer2_" + (i+1) + ".png");
         }
+
+        // load heart image for lives display
+        heartImage = safeLoadImage("heart.png.png");
     }
 
     public void update() {
@@ -490,9 +497,9 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
             int y = topPadding;
             
             if (i < player1Lives) {
-                drawHeart(graphicsHandler, x, y, heartSize, Color.red);
+                drawHeart(graphicsHandler, x, y, heartSize, true);
             } else {
-                drawHeart(graphicsHandler, x, y, heartSize, new Color(50, 50, 50));
+                drawHeart(graphicsHandler, x, y, heartSize, false);
             }
         }
         
@@ -503,16 +510,23 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
             int y = topPadding;
             
             if (i < player2Lives) {
-                drawHeart(graphicsHandler, x, y, heartSize, Color.red);
+                drawHeart(graphicsHandler, x, y, heartSize, true);
             } else {
-                drawHeart(graphicsHandler, x, y, heartSize, new Color(50, 50, 50));
+                drawHeart(graphicsHandler, x, y, heartSize, false);
             }
         }
     }
 
-    private void drawHeart(GraphicsHandler graphicsHandler, int x, int y, int size, Color color) {
-        // Draw a square heart
-        graphicsHandler.drawFilledRectangle(x, y, size, size, color);
+    private void drawHeart(GraphicsHandler graphicsHandler, int x, int y, int size, boolean isFull) {
+        if (heartImage != null && isFull) {
+            // Draw full heart at normal opacity
+            graphicsHandler.drawImage(heartImage, x, y, size, size);
+        } else if (heartImage == null) {
+            // Fallback to rectangle if image failed to load
+            Color color = isFull ? Color.red : new Color(50, 50, 50);
+            graphicsHandler.drawFilledRectangle(x, y, size, size, color);
+        }
+        // If heartImage exists but isFull is false, don't draw anything (heart disappears)
     }
 
     // This enum represents the different states this screen can be in
