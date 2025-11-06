@@ -7,7 +7,10 @@ import GameObject.Frame;
 import GameObject.ImageEffect;
 import GameObject.SpriteSheet;
 import Level.Player2;
+import Level.ProjectileAttack;
+import SpriteFont.SpriteFont;
 
+import java.awt.Color;
 import java.util.HashMap;
 
 // This is the class for the Cat player character
@@ -33,6 +36,25 @@ public class Cat2 extends Player2 {
     public void draw(GraphicsHandler graphicsHandler) {
         super.draw(graphicsHandler);
         //drawBounds(graphicsHandler, new Color(255, 0, 0, 170));
+        
+        // Draw current projectile name above Player 2 (Cat2 extends Player2)
+        String projectileName = ProjectileAttack.getPlayer2ProjectileName();
+        SpriteFont projectileLabel = new SpriteFont(projectileName, 
+            getX() + (getWidth() / 2) - (projectileName.length() * 4), // Center the text above player
+            getY() - 20, // Position 20 pixels above player
+            "Arial", 12, Color.WHITE);
+        projectileLabel.setOutlineColor(Color.BLACK);
+        projectileLabel.setOutlineThickness(1);
+        
+        // Adjust position relative to camera (important for moving camera)
+        if (map != null) {
+            projectileLabel.setLocation(
+                projectileLabel.getX() - map.getCamera().getX(),
+                projectileLabel.getY() - map.getCamera().getY()
+            );
+        }
+        
+        projectileLabel.draw(graphicsHandler);
     }
 
     @Override

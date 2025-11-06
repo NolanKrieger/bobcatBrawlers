@@ -23,7 +23,7 @@ public class CommonTileset extends Tileset {
         ArrayList<MapTileBuilder> mapTiles = new ArrayList<>();
 
         // grass
-        Frame grassFrame = new FrameBuilder(getSubImage(0, 0))
+        Frame grassFrame = new FrameBuilder(getSubImage(0, 1))
                 .withScale(tileScale)
                 .build();
 
@@ -33,7 +33,7 @@ public class CommonTileset extends Tileset {
         mapTiles.add(grassTile);
 
         // sky
-        Frame skyFrame = new FrameBuilder(getSubImage(0, 1))
+        Frame skyFrame = new FrameBuilder(getSubImage(0, 2))
                 .withScale(tileScale)
                 .build();
 

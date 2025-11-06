@@ -43,6 +43,13 @@ public class MapSelectScreen extends Screen {
 
    @Override
    public void initialize() {
+       // Reset lives whenever we enter map select (starting a fresh game)
+       try {
+           Screens.LevelLoseScreen.resetLives();
+       } catch (Exception e) {
+           System.out.println("Warning: Could not reset lives: " + e.getMessage());
+       }
+       
        background = new TitleScreenMap();
        background.setAdjustCamera(false);
 

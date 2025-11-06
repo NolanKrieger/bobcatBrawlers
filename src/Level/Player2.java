@@ -7,6 +7,7 @@ import Engine.Keyboard;
 import Game.GameState;
 import GameObject.GameObject;
 import GameObject.SpriteSheet;
+import SpriteFont.SpriteFont;
 import Utils.AirGroundState;
 import Utils.Direction;
 
@@ -42,18 +43,42 @@ public abstract class Player2 extends GameObject {
 
     // define keys
     protected KeyLocker keyLocker = new KeyLocker();
-    protected Key JUMP_KEY = Key.UP;
-    protected Key MOVE_LEFT_KEY = Key.LEFT;
-    protected Key MOVE_RIGHT_KEY = Key.RIGHT;
-    protected Key CROUCH_KEY = Key.DOWN;
-    protected Key ATTACK_KEY = Key.ENTER;
+    protected Key JUMP_KEY = Key.I;
+    protected Key MOVE_LEFT_KEY = Key.J;
+    protected Key MOVE_RIGHT_KEY = Key.L;
+    protected Key CROUCH_KEY = Key.K;
+    protected Key ATTACK_KEY = Key.U;
 
 
     // flags
     protected boolean isInvincible = false; // if true, player cannot be hurt by enemies (good for testing)
     // health system
-    protected int maxHealth = 10; // number of hits the player can take before dying
+    protected boolean attacksEnabled = true;
+    public void setAttacksEnabled(boolean enabled) {
+        this.attacksEnabled = enabled;
+        if (!enabled) {
+            keyLocker.unlockKey(ATTACK_KEY);
+        }
+    }
+    public boolean isAttacksEnabled() { return attacksEnabled; }
+    // press-to-disable support for Player2
+    protected int disablePressCount = 0;
+    protected boolean lastAttackKeyDown = false; // detect key-down edges
+    protected int forcedDisableMs = 0; // remaining ms for forced disable
+    protected static final int DISABLE_PRESS_LIMIT = 7;
+    protected static final int FORCED_DISABLE_DURATION_MS = 5000; // 8 seconds
+    protected int maxHealth = 5; // number of hits the player can take before dying
     protected int health = maxHealth;
+    
+    // Power-up system
+    protected boolean speedBoostActive = false;
+    protected boolean highJumpActive = false;
+    protected int powerUpDurationMs = 0;
+    protected float originalWalkSpeed;
+    protected float originalJumpHeight;
+    protected int selectedPowerUp = 0; // 0 = speed, 1 = high jump
+    protected boolean powerUpSelectionVisible = false;
+    protected int powerUpToggleCooldown = 0;
     
     boolean win = true;
 
@@ -66,16 +91,25 @@ public abstract class Player2 extends GameObject {
         previousPlayerState = playerState;
         levelState = LevelState.RUNNING;
     }
+    
+    // Initialize original values after subclass constructor sets the actual values
+    public void initializePowerUpSystem() {
+        if (originalWalkSpeed == 0) { // Only initialize once
+            originalWalkSpeed = walkSpeed;
+            originalJumpHeight = jumpHeight;
+        }
+    }
 
     public void update() {
         moveAmountX = 0;
         moveAmountY = 0;
 
-        
-
         // if player is currently playing through level (has not won or lost)
         if (levelState == LevelState.RUNNING) {
             applyGravity();
+            
+            // Update power-up system
+            updatePowerUps();
 
             // update player's state and current actions, which includes things like determining how much it should move each frame and if its walking or jumping
             do {
@@ -93,8 +127,29 @@ public abstract class Player2 extends GameObject {
 
             updateLockedKeys();
 
+            // Handle press-to-disable (count key-down edges of attack key) for Player2
+            boolean attackKeyDownNowP2 = Keyboard.isKeyDown(ATTACK_KEY);
+            if (attackKeyDownNowP2 && !lastAttackKeyDown) {
+                disablePressCount++;
+                if (Engine.Debug.ENABLED) System.out.println("DEBUG: Player2 disablePressCount=" + disablePressCount);
+                if (disablePressCount >= DISABLE_PRESS_LIMIT) {
+                    setAttacksEnabled(false);
+                    forcedDisableMs = FORCED_DISABLE_DURATION_MS;
+                    disablePressCount = 0;
+                    if (Engine.Debug.ENABLED) System.out.println("DEBUG: Player2 attacks disabled by press-limit");
+                }
+            }
+            lastAttackKeyDown = attackKeyDownNowP2;
+            if (forcedDisableMs > 0) {
+                forcedDisableMs = Math.max(0, forcedDisableMs - 16);
+                if (forcedDisableMs == 0) {
+                    setAttacksEnabled(true);
+                    if (Engine.Debug.ENABLED) System.out.println("DEBUG: Player2 forced-disable expired; attacks re-enabled");
+                }
+            }
+
             // attack input for player 2: spawn a projectile when attack key is pressed
-            if (Keyboard.isKeyDown(ATTACK_KEY) && !keyLocker.isKeyLocked(ATTACK_KEY)) {
+            if (attacksEnabled && Keyboard.isKeyDown(ATTACK_KEY) && !keyLocker.isKeyLocked(ATTACK_KEY)) {
                 keyLocker.lockKey(ATTACK_KEY);
                 int projW = 8; int projH = 8;
                 float speed = 240f;
@@ -484,12 +539,125 @@ public abstract class Player2 extends GameObject {
         return playerState == PlayerState.JUMPING;
     }
 
-
-    /* 
     public void draw(GraphicsHandler graphicsHandler) {
         super.draw(graphicsHandler);
-        drawBounds(graphicsHandler, new Color(0, 255, 0, 100));
-    } */
+        // drawBounds(graphicsHandler, new Color(0, 255, 0, 100));
+        
+        // Draw current projectile name above Player 2 (use Player 2's projectile type)
+        String projectileName = ProjectileAttack.getPlayer2ProjectileName();
+        SpriteFont projectileLabel = new SpriteFont(projectileName, 
+            getX() + (getWidth() / 2) - (projectileName.length() * 4), // Center the text above player
+            getY() - 20, // Position 20 pixels above player
+            "Arial", 12, Color.BLUE);
+        projectileLabel.setOutlineColor(Color.BLACK);
+        projectileLabel.setOutlineThickness(1);
+        
+        // Adjust position relative to camera (important for moving camera)
+        if (map != null) {
+            projectileLabel.setLocation(
+                projectileLabel.getX() - map.getCamera().getX(),
+                projectileLabel.getY() - map.getCamera().getY()
+            );
+        }
+        
+        projectileLabel.draw(graphicsHandler);
+    }
 
+    // Getters and setters for power-up system
+    public float getWalkSpeed() {
+        return walkSpeed;
+    }
     
+    public void setWalkSpeed(float walkSpeed) {
+        this.walkSpeed = walkSpeed;
+    }
+    
+    public float getJumpHeight() {
+        return jumpHeight;
+    }
+    
+    public void setJumpHeight(float jumpHeight) {
+        this.jumpHeight = jumpHeight;
+    }
+    
+    public float getGravity() {
+        return gravity;
+    }
+    
+    public void setGravity(float gravity) {
+        this.gravity = gravity;
+    }
+    
+    // Power-up system methods
+    private void updatePowerUps() {
+        // Initialize original values if not done yet
+        initializePowerUpSystem();
+        
+        // Handle power-up selection toggle cooldown
+        if (powerUpToggleCooldown > 0) {
+            powerUpToggleCooldown -= 16;
+        }
+        
+        // Handle power-up selection (7 and 8 keys when selection is visible)
+        if (powerUpSelectionVisible) {
+            if (Keyboard.isKeyDown(Key.SEVEN)) {
+                selectedPowerUp = 0; // Speed boost
+                activateSpeedBoost();
+                powerUpSelectionVisible = false;
+            } else if (Keyboard.isKeyDown(Key.EIGHT)) {
+                selectedPowerUp = 1; // High jump
+                activateHighJump();
+                powerUpSelectionVisible = false;
+            }
+        }
+        
+        // Update active power-ups
+        if (powerUpDurationMs > 0) {
+            powerUpDurationMs -= 16;
+            if (powerUpDurationMs <= 0) {
+                deactivatePowerUps();
+            }
+        }
+    }
+    
+    private void activateSpeedBoost() {
+        if (!speedBoostActive) {
+            speedBoostActive = true;
+            walkSpeed = originalWalkSpeed * 2.0f; // Double speed
+            powerUpDurationMs = 8000; // 8 seconds
+        }
+    }
+    
+    private void activateHighJump() {
+        if (!highJumpActive) {
+            highJumpActive = true;
+            jumpHeight = originalJumpHeight * 1.5f; // 50% higher jump
+            powerUpDurationMs = 8000; // 8 seconds
+        }
+    }
+    
+    private void deactivatePowerUps() {
+        speedBoostActive = false;
+        highJumpActive = false;
+        walkSpeed = originalWalkSpeed;
+        jumpHeight = originalJumpHeight;
+        powerUpDurationMs = 0;
+    }
+    
+    // Getters for power-up state
+    public boolean isPowerUpSelectionVisible() { return powerUpSelectionVisible; }
+    public int getSelectedPowerUp() { return selectedPowerUp; }
+    public boolean isSpeedBoostActive() { return speedBoostActive; }
+    public boolean isHighJumpActive() { return highJumpActive; }
+    public int getPowerUpRemainingMs() { return powerUpDurationMs; }
+    
+    // Method to show power-up selection (called automatically)
+    public void showPowerUpSelection() {
+        powerUpSelectionVisible = true;
+    }
+    
+    // Method to hide power-up selection (called on timeout)
+    public void hidePowerUpSelection() {
+        powerUpSelectionVisible = false;
+    }
 }

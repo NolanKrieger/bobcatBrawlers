@@ -25,7 +25,7 @@ public class QuadMap extends Map {
         super("quad_map.txt", new CommonTileset());
         this.playerStartPosition = getMapTile(2, 11).getLocation();
         
-        
+      
     }
 
     @Override
