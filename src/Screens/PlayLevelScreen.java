@@ -76,6 +76,8 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     private AudioPlayer bgMusicPlayer;
     // Audio player for lose sound effect
     private AudioPlayer loseSoundPlayer;
+    // Audio player for hurt sound effect
+    private AudioPlayer hurtSoundPlayer;
 
     public PlayLevelScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
@@ -494,9 +496,16 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
 
     @Override
     public void onHurt(GameObject source, int amount) {
-        // when any player is hurt, we simply let the draw() method read player.getHealth() each frame
-        // If we wanted to mirror actual HP across players we would call player.damage(amount,false)/player2.damage(...)
-        // For now, no extra action is necessary here.
+        // Play hurt sound effect when any player takes damage
+        try {
+            if (hurtSoundPlayer != null) {
+                hurtSoundPlayer.stop();
+            }
+            hurtSoundPlayer = new AudioPlayer("Resources/Sounds/Hurt.wav");
+            hurtSoundPlayer.play();
+        } catch (Exception e) {
+            System.out.println("Failed to play hurt sound: " + e.getMessage());
+        }
     }
 
     public void resetLevel() {
@@ -522,6 +531,11 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 loseSoundPlayer.stop();
                 loseSoundPlayer.close();
                 loseSoundPlayer = null;
+            }
+            if (hurtSoundPlayer != null) {
+                hurtSoundPlayer.stop();
+                hurtSoundPlayer.close();
+                hurtSoundPlayer = null;
             }
         } catch (Exception e) {
             System.out.println("Failed to stop music: " + e.getMessage());

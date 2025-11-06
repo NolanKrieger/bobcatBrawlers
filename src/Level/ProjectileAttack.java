@@ -6,6 +6,7 @@ import Engine.GraphicsHandler;
 import Engine.ImageLoader;
 import Engine.Keyboard;
 import Engine.Key;
+import Engine.AudioPlayer;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 
@@ -18,6 +19,8 @@ public class ProjectileAttack {
     private static float[] projectileDamage = {0.5f, 0.5f, 1.0f}; // PencilPixel=0.25, BurritoPixel=0.5, ComputerPixel=1.0
     private static boolean xKeyWasPressed = false; // For player 1
     private static boolean nKeyWasPressed = false; // For player 2
+    // Audio for firing projectile (loaded once)
+    private static AudioPlayer projectileSound = new AudioPlayer("Resources/Sounds/Shooting.wav");
     
     private float x,y;
     private float vx, vy;
@@ -56,6 +59,12 @@ public class ProjectileAttack {
         // Use damage and image based on the appropriate player's projectile type
         this.damage = projectileDamage[projectileType];
         this.projectileImage = ImageLoader.load(projectileImages[projectileType]);
+        // play firing sound when projectile is spawned by a player
+        try {
+            if (fromPlayer && projectileSound != null) projectileSound.play();
+        } catch (Exception e) {
+            if (Engine.Debug.ENABLED) System.out.println("DEBUG: Failed to play projectile sound: " + e);
+        }
     }
     
     // Static method to check for 'X' and 'N' key presses and cycle projectile types
