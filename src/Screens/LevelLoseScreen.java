@@ -26,6 +26,10 @@ public class LevelLoseScreen extends Screen {
         return lives;
     }
 
+    public static void resetLives() {
+        lives.resetLives();
+    }
+
     @Override
     public void initialize() {
         int player1Health = playLevelScreen.getPlayer().getHealth();
@@ -66,7 +70,7 @@ public class LevelLoseScreen extends Screen {
             scoreboardDisplay = null;
         }
         
-        instructions = new SpriteFont("Press Space to go back to menu", 350, 380, "Arial", 20, Color.white);
+        instructions = new SpriteFont("Press Space to play again", 350, 380, "Arial", 20, Color.white);
         keyLocker.lockKey(Key.SPACE);
         keyLocker.lockKey(Key.ESC);
     }
@@ -82,6 +86,8 @@ public class LevelLoseScreen extends Screen {
 
         // if space is pressed, reset level. if escape is pressed, go back to main menu
         if (Keyboard.isKeyDown(Key.SPACE) && !keyLocker.isKeyLocked(Key.SPACE)) {
+            // Game is ending - reset lives for next game
+            resetLives();
             playLevelScreen.resetLevel();
         } else if (Keyboard.isKeyDown(Key.ESC) && !keyLocker.isKeyLocked(Key.ESC)) {
             playLevelScreen.goBackToMenu();

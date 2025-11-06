@@ -6,6 +6,7 @@ import Engine.ScreenManager;
 import Game.GameState;
 import Game.ScreenCoordinator;
 import Level.Map;
+import Level.ProjectileAttack;
 import Engine.AudioPlayer;
 import Level.Player;
 import Level.Player2;
@@ -52,6 +53,14 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     private int hurtFlashTimerP1 = 0;
     private int hurtFlashTimerP2 = 0;
     private final int HURT_FLASH_MS = 400;
+    
+    // Power-up system timer - random timing
+    private int gameStartTimer = 0;
+    private int powerUpShowTime = 0; // Random time when power-ups will appear
+    private boolean powerUpBoxesShown = false;
+    private final int POWERUP_MIN_DELAY_MS = 2000; // 2 seconds minimum
+    private final int POWERUP_MAX_DELAY_MS = 20000; // 20 seconds maximum
+    
     // automatic scheduler disabled when using press-to-disable; set very large to avoid triggering
     private final int COOLDOWN_CYCLE_MS = Integer.MAX_VALUE;
     private final int DISABLE_DURATION_MS = 5000;
@@ -70,6 +79,10 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
 
     public PlayLevelScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
+        
+        // Initialize random power-up show time between 2-20 seconds
+        powerUpShowTime = POWERUP_MIN_DELAY_MS + 
+            (int)(Math.random() * (POWERUP_MAX_DELAY_MS - POWERUP_MIN_DELAY_MS));
     }
 
     // Safely load an image by filename. It returns null if the image is missin
@@ -113,9 +126,9 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     float p2X = Math.max(0, map.getEndBoundX() - 500); 
        switch (p1Index) {
           case 0: player = new AlexFighter(p1StartX, p1StartY); break;
-      //     case 1: player = new Nicolini(p1StartX, p1StartY); break; // replace later with Nicolini
+           case 1: player = new Nicolini(p1StartX, p1StartY); break; // replace later with Nicolini
           case 2: player = new Boomer(p1StartX, p1StartY); break;
-          //  case 3: player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
+            case 3: player = new Chester(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
          //   case 4: player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
 //case 5: player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
          //   default: player = new Alex(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
@@ -126,9 +139,9 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         switch (p2Index) {
             // place player2 on the opposite side of the level (right side)
             case 0: player2 = new AlexFighter2(p2X, p1StartY); break;
-         //   case 1: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break; // replace later with Nicolini2 etc.
+            case 1: player2 = new Nicolini2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break; // replace later with Nicolini2 etc.
             case 2: player2 = new Boomer2(p2X - 50, p1StartY); break;
-        //    case 3: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
+            case 3: player2 = new Chester2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
        //    case 4: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
        //     case 5: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
         //    default: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
@@ -177,10 +190,15 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         
         try {
             heartImage = ImageLoader.load(heartImagePath, Color.BLACK);
+            System.out.println("Successfully loaded heart image: " + heartImagePath);
         } catch (RuntimeException e) {
             System.out.println("Failed to load " + heartImagePath + ": " + e.getMessage());
             heartImage = null;
         }
+        
+        // Debug: print lives status
+        Game.Lives lives = LevelLoseScreen.getLives();
+        System.out.println("Lives status at initialize: P1=" + lives.getPlayer1Lives() + ", P2=" + lives.getPlayer2Lives());
     }
 
     public void update() {
@@ -188,6 +206,18 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         switch (playLevelScreenState) {
             // if level is "running" update player and map to keep game logic for the platformer level going
             case RUNNING:
+                // Power-up box auto-show timer with random timing
+                gameStartTimer += 16; // Increment by frame delta
+                
+                // Show power-ups at random time between 2-20 seconds
+                if (!powerUpBoxesShown && gameStartTimer >= powerUpShowTime) {
+                    powerUpBoxesShown = true;
+                    if (player != null) player.showPowerUpSelection();
+                    if (player2 != null) player2.showPowerUpSelection();
+                }
+                
+                // No timeout - boxes stay visible until player selects power-up
+                
                 // Scheduler for periodic attack disable (runs before players update so effect is immediate)
                 cooldownTimer += 16; // frame delta approximation (matches other timers)
                 if (disabledPlayer == 0) {
@@ -240,10 +270,16 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                     }
                     prevP2AttacksEnabled = now2;
                 }
-                map.update(player, player2);
+   
                 // decrement hurt flash timers
                 if (hurtFlashTimerP1 > 0) hurtFlashTimerP1 = Math.max(0, hurtFlashTimerP1 - 16);
                 if (hurtFlashTimerP2 > 0) hurtFlashTimerP2 = Math.max(0, hurtFlashTimerP2 - 16);
+
+                // Update projectile types (X and N key handling)
+                ProjectileAttack.updateProjectileTypes();
+
+                // Update map (includes projectiles and collisions)
+                map.update(player, player2);
 
                 // --- Detect "jump start" edges and advance image (max 5) ---
 
@@ -408,8 +444,14 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                     graphicsHandler.drawString(offText, txtX2c, txtY2c, offFont, Color.BLACK);
                 }
                 
+
                 // Draw lives as hearts on the HUD
                 drawLivesHearts(graphicsHandler);
+
+                // Draw power-up selection boxes
+                drawPowerUpSelectionUI(graphicsHandler);
+                
+
                 break;
 
             case LEVEL_COMPLETED:
@@ -464,6 +506,8 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
 
     public void goBackToMenu() {
         stopMusic();
+        // Reset lives for next game
+        LevelLoseScreen.resetLives();
         screenCoordinator.setGameState(GameState.MENU);
     }
 
@@ -490,6 +534,66 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
 
     public Player2 getPlayer2() {
         return player2;
+    }
+    
+    // Draw power-up selection UI boxes dynamically over players
+    private void drawPowerUpSelectionUI(GraphicsHandler graphicsHandler) {
+        Font optionFont = new Font("Arial", Font.BOLD, 12);
+        
+        // Player 1 power-up selection - positioned dynamically over Player 1
+        if (player != null && player.isPowerUpSelectionVisible()) {
+            // Calculate position relative to Player 1's current position
+            int p1ScreenX = Math.round(player.getX() - map.getCamera().getX());
+            int p1ScreenY = Math.round(player.getY() - map.getCamera().getY());
+            
+            // Position box further above player to avoid health bar
+            int boxX = p1ScreenX - 90; // Center the 180px box over player
+            int boxY = p1ScreenY - 120; // Position higher above player (was -80, now -120)
+            
+            // Simple line box positioned over Player 1
+            graphicsHandler.drawRectangle(boxX, boxY, 180, 60, Color.WHITE, 2);
+            
+            // Options with darker font for better visibility
+            graphicsHandler.drawString("1: Speed  2: Jump", boxX + 5, boxY + 35, optionFont, Color.BLACK);
+            graphicsHandler.drawString("Player 1 - Choose", boxX + 5, boxY + 20, optionFont, Color.DARK_GRAY);
+        }
+        
+        // Player 2 power-up selection - positioned dynamically over Player 2
+        if (player2 != null && player2.isPowerUpSelectionVisible()) {
+            // Calculate position relative to Player 2's current position
+            int p2ScreenX = Math.round(player2.getX() - map.getCamera().getX());
+            int p2ScreenY = Math.round(player2.getY() - map.getCamera().getY());
+            
+            // Position box further above player to avoid health bar
+            int boxX = p2ScreenX - 90; // Center the 180px box over player
+            int boxY = p2ScreenY - 120; // Position higher above player (was -80, now -120)
+            
+            // Simple line box positioned over Player 2
+            graphicsHandler.drawRectangle(boxX, boxY, 180, 60, Color.WHITE, 2);
+            
+            // Options with darker font for better visibility
+            graphicsHandler.drawString("7: Speed  8: Jump", boxX + 5, boxY + 35, optionFont, Color.BLACK);
+            graphicsHandler.drawString("Player 2 - Choose", boxX + 5, boxY + 20, optionFont, Color.DARK_GRAY);
+        }
+        
+        // Show active power-ups - positioned near respective players
+        if (player != null && (player.isSpeedBoostActive() || player.isHighJumpActive())) {
+            int p1ScreenX = Math.round(player.getX() - map.getCamera().getX());
+            int p1ScreenY = Math.round(player.getY() - map.getCamera().getY());
+            
+            String powerUpText = "P1: " + (player.isSpeedBoostActive() ? "SPEED" : "JUMP") + 
+                               " (" + (player.getPowerUpRemainingMs() / 1000) + "s)";
+            graphicsHandler.drawString(powerUpText, p1ScreenX - 40, p1ScreenY - 100, optionFont, Color.YELLOW);
+        }
+        
+        if (player2 != null && (player2.isSpeedBoostActive() || player2.isHighJumpActive())) {
+            int p2ScreenX = Math.round(player2.getX() - map.getCamera().getX());
+            int p2ScreenY = Math.round(player2.getY() - map.getCamera().getY());
+            
+            String powerUpText = "P2: " + (player2.isSpeedBoostActive() ? "SPEED" : "JUMP") + 
+                               " (" + (player2.getPowerUpRemainingMs() / 1000) + "s)";
+            graphicsHandler.drawString(powerUpText, p2ScreenX - 40, p2ScreenY - 100, optionFont, Color.YELLOW);
+        }
     }
 
     private void drawLivesHearts(GraphicsHandler graphicsHandler) {

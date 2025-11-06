@@ -84,6 +84,8 @@ public class GamePanel extends JPanel {
 		updatePauseState();
 		updateShowFPSState();
 
+		Level.ProjectileAttack.updateProjectileTypes();
+
 		if (!isGamePaused) {
 			screenManager.update();
 		}
