@@ -8,7 +8,8 @@ import EnhancedMapTiles.HorizontalMovingPlatform;
 import GameObject.Rectangle;
 import Level.*;
 // import NPCs.Walrus;
-import Tilesets.CommonTileset;
+import Tilesets.NewCommonTileset;
+
 import Utils.Direction;
 
 import java.util.ArrayList;
@@ -17,8 +18,8 @@ import java.util.ArrayList;
 public class BobcatMap extends Map {
 
     public BobcatMap() {
-        super("bobcat_map.txt", new CommonTileset());
-        this.playerStartPosition = getMapTile(16, 6).getLocation();
+        super("bobcat_map.txt", new NewCommonTileset());
+        this.playerStartPosition = getMapTile(5, 4).getLocation();
     }
 
     // @Override
