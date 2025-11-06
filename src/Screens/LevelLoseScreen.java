@@ -32,32 +32,34 @@ public class LevelLoseScreen extends Screen {
         int player2Health = playLevelScreen.getPlayer2().getHealth();
         
         if (player1Health > 0) {
-            // Player 1 wins - Player 2 loses a life
-            scoreboard.addPlayer1Win();
+            // Player 1 won this round - Player 2 loses a life
             lives.losePlayer2Life();
             
-            // If Player 2 still has lives, respawn immediately
+            // If Player 2 still has lives, respawn immediately (no win recorded yet)
             if (lives.getPlayer2Lives() > 0) {
                 playLevelScreen.resetLevel();
                 return;
             }
             
-            loseMessage = new SpriteFont("Player 2 Out of Lives! Player 1 Wins!", 300, 300, "Arial", 30, Color.white);
-            scoreboardDisplay = new SpriteFont("Scoreboard: " + scoreboard.toString() + " | Lives: " + lives.toString(), 350, 340, "Arial", 20, Color.white);
+            // Player 2 is out of lives - Player 1 gets a win
+            scoreboard.addPlayer1Win();
+            loseMessage = new SpriteFont("Player 1 Wins!", 300, 300, "Arial", 30, Color.white);
+            scoreboardDisplay = new SpriteFont("Scoreboard: " + scoreboard.toString(), 350, 340, "Arial", 20, Color.white);
 
         } else if (player2Health > 0) {
-            // Player 2 wins - Player 1 loses a life
-            scoreboard.addPlayer2Win();
+            // Player 2 won this round - Player 1 loses a life
             lives.losePlayer1Life();
             
-            // If Player 1 still has lives, respawn immediately
+            // If Player 1 still has lives, respawn immediately (no win recorded yet)
             if (lives.getPlayer1Lives() > 0) {
                 playLevelScreen.resetLevel();
                 return;
             }
             
-            loseMessage = new SpriteFont("Player 1 Out of Lives! Player 2 Wins!", 300, 300, "Arial", 30, Color.white);
-            scoreboardDisplay = new SpriteFont("Scoreboard: " + scoreboard.toString() + " | Lives: " + lives.toString(), 350, 340, "Arial", 20, Color.white);
+            // Player 1 is out of lives - Player 2 gets a win
+            scoreboard.addPlayer2Win();
+            loseMessage = new SpriteFont("Player 2 Wins!", 300, 300, "Arial", 30, Color.white);
+            scoreboardDisplay = new SpriteFont("Scoreboard: " + scoreboard.toString(), 350, 340, "Arial", 20, Color.white);
             
         } else {
             loseMessage = new SpriteFont("You lose!", 520, 300, "Arial", 30, Color.white);

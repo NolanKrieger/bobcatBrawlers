@@ -167,8 +167,20 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
             p2JumpImages[i] = safeLoadImage("PlayerHealthPlayer2_" + (i+1) + ".png");
         }
 
-        // load heart image for lives display
-        heartImage = safeLoadImage("heart.png.png");
+        // load heart image for lives display based on which map is selected
+        String heartImagePath = "heart.png.png"; // default heart image for most maps
+        
+        if (mapIndex == 1) {
+            // CCE map uses cceheart.png.png
+            heartImagePath = "cceheart.png.png";
+        }
+        
+        try {
+            heartImage = ImageLoader.load(heartImagePath, Color.BLACK);
+        } catch (RuntimeException e) {
+            System.out.println("Failed to load " + heartImagePath + ": " + e.getMessage());
+            heartImage = null;
+        }
     }
 
     public void update() {
