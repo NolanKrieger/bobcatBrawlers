@@ -69,7 +69,7 @@ public abstract class Player extends GameObject {
     protected int forcedDisableMs = 0; // remaining ms for forced disable
     protected static final int DISABLE_PRESS_LIMIT = 7;
     protected static final int FORCED_DISABLE_DURATION_MS = 5000; // 8 seconds
-    protected int maxHealth = 5; // number of hits the player can take before dying
+    protected int maxHealth = 20; // number of hits the player can take before dying
     protected int health = maxHealth;
     
     // Power-up system
