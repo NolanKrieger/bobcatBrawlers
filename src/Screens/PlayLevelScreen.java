@@ -40,12 +40,12 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     // Overhead health bar images 
     // Player 1 Health bar
     private BufferedImage p1Default;
-    private BufferedImage[] p1JumpImages = new BufferedImage[4];
+    private BufferedImage[] p1JumpImages = new BufferedImage[19];
     
 
     // Player 2 Health bar
     private BufferedImage p2Default;
-    private BufferedImage[] p2JumpImages = new BufferedImage[4];
+    private BufferedImage[] p2JumpImages = new BufferedImage[19];
     
     // Hearts for lives display
     private BufferedImage heartImage;
@@ -170,13 +170,11 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
             System.out.println("Failed to start background music: " + e.getMessage());
         }
 
-        // load health overlay images for player 1 (stages 1-5)
         p1Default = safeLoadImage("PlayerHealth.png");
         for (int i = 0; i < p1JumpImages.length; i++) {
             p1JumpImages[i] = safeLoadImage("PlayerHealth" + (i+1) + ".png");
         }
 
-        // load health overlay images for player 2 (stages 1..10)
         p2Default = safeLoadImage("PlayerHealthPlayer2.png");
         for (int i = 0; i < p2JumpImages.length; i++) {
             p2JumpImages[i] = safeLoadImage("PlayerHealthPlayer2_" + (i+1) + ".png");
