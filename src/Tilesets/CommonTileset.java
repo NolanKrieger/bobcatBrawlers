@@ -42,7 +42,7 @@ public class CommonTileset extends Tileset {
         mapTiles.add(skyTile);
 
         // dirt
-        Frame dirtFrame = new FrameBuilder(getSubImage(0, 2))
+        Frame dirtFrame = new FrameBuilder(getSubImage(1, 0))
                 .withScale(tileScale)
                 .build();
 

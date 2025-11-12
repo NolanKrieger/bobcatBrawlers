@@ -15,7 +15,7 @@ public class CCEMap extends Map {
 
     public CCEMap() {
         super("CCEMap.txt", new CommonTileset());
-        this.playerStartPosition = getMapTile(6, 1).getLocation();
+        this.playerStartPosition = getMapTile(6, 10).getLocation();
         try {
             // Point catLocation = getMapTile(15, 2).getLocation().subtractX(24).subtractY(6);
             // cat = new Sprite(ImageLoader.loadSubImage("Cat.png", Colors.MAGENTA, 0, 0, 24, 24));
