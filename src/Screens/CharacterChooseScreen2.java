@@ -77,13 +77,13 @@ public class CharacterChooseScreen2 extends Screen {
     characterImages[0] = alexSheet.getSprite(0, 0);
 
     SpriteSheet BoomerSheet = new SpriteSheet(ImageLoader.load("boomersprite1.png"), 24, 24);
-    characterImages[1] = BoomerSheet.getSprite(0, 0);
+    characterImages[2] = BoomerSheet.getSprite(0, 0);
 
     SpriteSheet ChesterSheet = new SpriteSheet(ImageLoader.load("chestersprite.png"), 24, 24);
-    characterImages[2] = ChesterSheet.getSprite(0, 0);
+    characterImages[3] = ChesterSheet.getSprite(0, 0);
    
     SpriteSheet NicoliniSheet = new SpriteSheet(ImageLoader.load("nicolinisprite.png"), 24, 24);
-    characterImages[3] = NicoliniSheet.getSprite(0, 0);
+    characterImages[1] = NicoliniSheet.getSprite(0, 0);
    
   //  SpriteSheet BoomerSheet = new SpriteSheet(ImageLoader.load("boomersprite1.png"), 24, 24);
    // characterImages[4] = BoomerSheet.getSprite(0, 0);
