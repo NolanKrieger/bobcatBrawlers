@@ -9,6 +9,7 @@ import Level.Map;
 
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 
 public class MapSelectScreen extends Screen {
@@ -17,6 +18,7 @@ public class MapSelectScreen extends Screen {
    protected KeyLocker keyLocker = new KeyLocker();
    protected SpriteFont titleLabel;
    protected SpriteFont returnInstructionsLabel;
+   protected BufferedImage[] mapPreviewImages;
 
    private int currentCharacterHovered = 0;
    private int characterSelected = -1;
@@ -67,9 +69,23 @@ public class MapSelectScreen extends Screen {
        keyLocker.lockKey(Key.LEFT);
        keyLocker.lockKey(Key.RIGHT);
 
-
-
-       
+       // Load map preview images
+       mapPreviewImages = new BufferedImage[characters.length];
+       try {
+           mapPreviewImages[0] = ImageLoader.load("mapImages/pixQuad.png"); // Quad map at index 0
+       } catch (Exception e) {
+           System.out.println("Warning: Could not load pixQuad.png: " + e.getMessage());
+       }
+       try {
+           mapPreviewImages[1] = ImageLoader.load("mapImages/pixCCE.png"); // CCE030 map at index 1
+       } catch (Exception e) {
+           System.out.println("Warning: Could not load pixCCE.png: " + e.getMessage());
+       }
+       try {
+           mapPreviewImages[2] = ImageLoader.load("mapImages/pixCat.png"); // Bobcat map at index 2
+       } catch (Exception e) {
+           System.out.println("Warning: Could not load pixCat.png: " + e.getMessage());
+       }
    }
 
 
@@ -133,6 +149,22 @@ if (!keyLocker.isKeyLocked(Key.SPACE) && Keyboard.isKeyDown(Key.SPACE)) {
              graphicsHandler.drawFilledRectangleWithBorder(x, y, slotWidth, slotHeight, c, Color.WHITE, 5);
         } else {
             graphicsHandler.drawFilledRectangle(x, y, slotWidth, slotHeight, c);
+        }
+
+        // Draw map preview image if available
+        if (mapPreviewImages != null && mapPreviewImages[i] != null) {
+            int imageWidth = mapPreviewImages[i].getWidth();
+            int imageHeight = mapPreviewImages[i].getHeight();
+            
+            // Scale to fit the slot while maintaining aspect ratio
+            float scale = Math.min((float)slotWidth / imageWidth, (float)slotHeight / imageHeight) * 0.9f;
+            int scaledWidth = (int)(imageWidth * scale);
+            int scaledHeight = (int)(imageHeight * scale);
+            
+            int imageX = x + (slotWidth / 2) - (scaledWidth / 2);
+            int imageY = y + (slotHeight / 2) - (scaledHeight / 2);
+            
+            graphicsHandler.drawImage(mapPreviewImages[i], imageX, imageY, scaledWidth, scaledHeight);
         }
 
            SpriteFont nameLabel = new SpriteFont(characters[i], x + slotWidth / 2 - (characters[i].length() * 4), screenHeight - 60, "Arial", 18, Color.WHITE);
