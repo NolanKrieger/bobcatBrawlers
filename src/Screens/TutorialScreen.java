@@ -29,7 +29,12 @@ public class TutorialScreen extends Screen implements PlayerListener {
    protected SpriteFont underlinedLabel1;
    protected SpriteFont underlinedLabel2;
    protected SpriteFont underlinedLabel3;
-   protected SpriteFont keyDescription;
+   protected SpriteFont WkeyDescription;
+   protected SpriteFont AkeyDescription;
+   protected SpriteFont SkeyDescription;
+   protected SpriteFont DkeyDescription;
+   protected SpriteFont ShootAttackDescription;
+   protected SpriteFont ChangeAttackDescription;
    protected SpriteFont returnInstructionsLabel;
    protected TutorialLoseScreen tutorialLoseScreen;
    protected boolean showingLevelLose = false;
@@ -76,12 +81,17 @@ public class TutorialScreen extends Screen implements PlayerListener {
        this.player.addListener(this);
        tutorialLabel = new SpriteFont("Tutorial", 600, 5, "Times New Roman", 30, Color.white);
        movementLabel = new SpriteFont("Movements", 250, 40, "Times New Roman", 26, Color.white);
-       movementDescription = new SpriteFont("Use WASD: ", 250, 78, "Times New Roman", 20, Color.white);
+       movementDescription = new SpriteFont("Use WASD Keys: ", 250, 78, "Times New Roman", 20, Color.white);
        attackLabel = new SpriteFont("Attacks", 950, 40, "Times New Roman",26, Color.white);
        underlinedLabel1 = new SpriteFont("_______", 600, 5, "Times New Roman", 30, Color.white);
        underlinedLabel2 = new SpriteFont("________", 250, 38, "Times New Roman", 30, Color.white);
        underlinedLabel3 = new SpriteFont("______", 950, 38, "Times New Roman", 30, Color.white);
-       keyDescription = new SpriteFont("-Use WASD to move and jump", 250, 107, "Times New Roman", 18, Color.white);
+       WkeyDescription = new SpriteFont("W-To Jump", 250, 107, "Times New Roman", 18, Color.white);
+       AkeyDescription = new SpriteFont("A-To Move Left", 250, 130, "Times New Roman", 18, Color.white);
+       SkeyDescription = new SpriteFont("S-To Crouch", 250, 154, "Times New Roman", 18, Color.white);
+       DkeyDescription = new SpriteFont("D-To Move Right", 250, 178, "Times New Roman", 18, Color.white);
+       ShootAttackDescription = new SpriteFont("Key E-To Shoot", 950, 78, "Times New Roman", 18, Color.white);
+       ChangeAttackDescription = new SpriteFont("Key X-To Change Attacks", 950, 99, "Times New Roman", 18, Color.white);
        returnInstructionsLabel = new SpriteFont("Press Space to return to the menu", 20, 740, "Times New Roman", 18, Color.white);
        keyLocker.lockKey(Key.SPACE);
    }
@@ -121,8 +131,13 @@ public class TutorialScreen extends Screen implements PlayerListener {
        attackLabel.draw(graphicsHandler);
        underlinedLabel1.draw(graphicsHandler);
        underlinedLabel2.draw(graphicsHandler);
-       underlinedLabel3.draw(graphicsHandler);
-       keyDescription.draw(graphicsHandler);
+       underlinedLabel3.draw(graphicsHandler); 
+       WkeyDescription.draw(graphicsHandler);
+       AkeyDescription.draw(graphicsHandler);
+       SkeyDescription.draw(graphicsHandler);
+       DkeyDescription.draw(graphicsHandler);
+       ShootAttackDescription.draw(graphicsHandler);
+       ChangeAttackDescription.draw(graphicsHandler);
        returnInstructionsLabel.draw(graphicsHandler);
    }
 }

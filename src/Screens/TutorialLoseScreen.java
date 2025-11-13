@@ -19,8 +19,8 @@ public class TutorialLoseScreen extends Screen {
 
     @Override
     public void initialize() {
-        loseMessage = new SpriteFont("You lost from the tutorial!", 235, 239, "Arial", 30, Color.white);
-        instructions = new SpriteFont("Press Space to try again or Escape to go back to the main menu", 120, 279,"Arial", 20, Color.white);
+        loseMessage = new SpriteFont("You lost from the tutorial!", 485, 300, "Arial", 30, Color.white);
+        instructions = new SpriteFont("Press Space to try again or Escape to go back to the main menu", 370, 340,"Arial", 20, Color.white);
        
         if (Keyboard.isKeyUp(Key.SPACE)) {
             keyLocker.unlockKey(Key.SPACE);
