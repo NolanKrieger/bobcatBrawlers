@@ -545,7 +545,7 @@ public abstract class Player extends GameObject {
         SpriteFont projectileLabel = new SpriteFont(projectileName, 
             getX() + (getWidth() / 2) - (projectileName.length() * 4), // Center the text above player
             getY() - 20, // Position 20 pixels above player
-            "Arial", 12, Color.BLUE);
+            "Arial", 12, Color.WHITE);
         projectileLabel.setOutlineColor(Color.BLACK);
         projectileLabel.setOutlineThickness(1);
         
