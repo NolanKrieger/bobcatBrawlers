@@ -106,7 +106,7 @@ public class MenuScreen extends Screen {
         } else if (currentMenuItemHovered == 2) {
             playGame.setColor(new Color(49, 207, 240));
             tutorial.setColor(new Color(49, 207, 240));
-            credits.setColor(new Color(49, 207, 240));
+            credits.setColor(new Color(255, 215, 0));
             pointerLocationX = 170; pointerLocationY = 430;
         } 
 
