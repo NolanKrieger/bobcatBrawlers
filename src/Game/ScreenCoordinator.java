@@ -3,7 +3,6 @@ package Game;
 import Engine.DefaultScreen;
 import Engine.GraphicsHandler;
 import Engine.Screen;
-import Screens.CharacterChooseScreen;
 import Screens.CharacterChooseScreen2;
 import Screens.CreditsScreen;
 import Screens.MapSelectScreen;
@@ -56,9 +55,6 @@ public class ScreenCoordinator extends Screen {
                         break;
                     case TUTORIAL:
                         currentScreen = new TutorialScreen(this);
-                        break;
-                    case CHARACTER_SELECT:
-                        currentScreen = new CharacterChooseScreen(this);
                         break;
                         case CHARACTER_SELECT2:
                         currentScreen = new CharacterChooseScreen2(this);
