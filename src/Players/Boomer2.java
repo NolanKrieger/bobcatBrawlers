@@ -18,7 +18,7 @@ public class Boomer2 extends Player2 {
     protected int jumpsRemaining = 1; // Double jump - 1 extra jump available
 
     public Boomer2(float x, float y) {
-        super(new SpriteSheet(ImageLoader.load("boomersprite1.png"), 24, 24), x, y, "STAND_RIGHT");
+        super(new SpriteSheet(ImageLoader.load("boomersprite1.png"), 24, 24), x, y, "WALK_LEFT");
         gravity = 1.0f;
         terminalVelocityY = 8f;
         jumpHeight = 16f;
@@ -153,7 +153,7 @@ public class Boomer2 extends Player2 {
             put("CROUCH_RIGHT", new Frame[] {
                     new FrameBuilder(spriteSheet.getSprite(4, 0))
                             .withScale(5)
-                            .withBounds(8, 12, 10, 6)
+                            .withBounds(6, 10, 10, 10)
                             .build()
             });
 
@@ -161,7 +161,7 @@ public class Boomer2 extends Player2 {
                     new FrameBuilder(spriteSheet.getSprite(4, 0))
                             .withScale(5)
                             .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                            .withBounds(8, 12, 10, 6)
+                            .withBounds(6, 10, 10, 10)
                             .build()
             });
 

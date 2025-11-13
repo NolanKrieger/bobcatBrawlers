@@ -128,7 +128,7 @@ public class AlexFighter2 extends Player2 {
             put("CROUCH_RIGHT", new Frame[] {
                     new FrameBuilder(spriteSheet.getSprite(4, 0))
                             .withScale(5)
-                            .withBounds(8, 12, 10, 6)
+                            .withBounds(6, 10, 10, 10)
                             .build()
             });
 
@@ -136,7 +136,7 @@ public class AlexFighter2 extends Player2 {
                     new FrameBuilder(spriteSheet.getSprite(4, 0))
                             .withScale(5)
                             .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                            .withBounds(8, 12, 10, 6)
+                            .withBounds(6, 10, 10, 10)
                             .build()
             });
 

@@ -85,11 +85,11 @@ public class CharacterChooseScreen2 extends Screen {
     SpriteSheet NicoliniSheet = new SpriteSheet(ImageLoader.load("nicolinisprite.png"), 24, 24);
     characterImages[1] = NicoliniSheet.getSprite(0, 0);
    
-  //  SpriteSheet BoomerSheet = new SpriteSheet(ImageLoader.load("boomersprite1.png"), 24, 24);
-   // characterImages[4] = BoomerSheet.getSprite(0, 0);
+  //  SpriteSheet MarieSheet = new SpriteSheet(ImageLoader.load("boomersprite1.png"), 24, 24);
+   // characterImages[4] = MarieSheet.getSprite(0, 0);
    
-    //SpriteSheet BoomerSheet = new SpriteSheet(ImageLoader.load("alexsprite5.png"), 24, 24);
-    //characterImages[5] = "boomerSheet"Sheet.getSprite(0, 0);
+    //SpriteSheet JudySheet = new SpriteSheet(ImageLoader.load("alexsprite5.png"), 24, 24);
+    //characterImages[5] = "JudySheet"Sheet.getSprite(0, 0);
 
    }
 
