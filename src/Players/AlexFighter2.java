@@ -20,7 +20,7 @@ public class AlexFighter2 extends Player2 {
         terminalVelocityY = 8f;
         jumpHeight = 16f;
         jumpDegrade = .5f;
-        walkSpeed = 5.0f;
+        walkSpeed = 10.0f;
         momentumYIncrease = .5f;
     }
 
