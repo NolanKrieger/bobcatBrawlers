@@ -72,17 +72,17 @@ public class MapSelectScreen extends Screen {
        // Load map preview images
        mapPreviewImages = new BufferedImage[characters.length];
        try {
-           mapPreviewImages[0] = ImageLoader.load("mapImages/pixQuad.png"); // Quad map at index 0
+           mapPreviewImages[0] = ImageLoader.load("mapImages/pixQuad.png");
        } catch (Exception e) {
            System.out.println("Warning: Could not load pixQuad.png: " + e.getMessage());
        }
        try {
-           mapPreviewImages[1] = ImageLoader.load("mapImages/pixCCE.png"); // CCE030 map at index 1
+           mapPreviewImages[1] = ImageLoader.load("mapImages/pixCCE.png");
        } catch (Exception e) {
            System.out.println("Warning: Could not load pixCCE.png: " + e.getMessage());
        }
        try {
-           mapPreviewImages[2] = ImageLoader.load("mapImages/pixCat.png"); // Bobcat map at index 2
+           mapPreviewImages[2] = ImageLoader.load("mapImages/pixCat.png");
        } catch (Exception e) {
            System.out.println("Warning: Could not load pixCat.png: " + e.getMessage());
        }
