@@ -15,7 +15,7 @@ import java.util.HashMap;
 public class AlexFighter2 extends Player2 {
 
     public AlexFighter2(float x, float y) {
-        super(new SpriteSheet(ImageLoader.load("alexupdated6.png"), 24, 24), x, y, "STAND_LEFT");
+        super(new SpriteSheet(ImageLoader.load("alexupdated67.png"), 24, 24), x, y, "STAND_LEFT");
         gravity = 1.0f;
         terminalVelocityY = 8f;
         jumpHeight = 16f;
