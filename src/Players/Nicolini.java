@@ -128,7 +128,7 @@ public class Nicolini extends Player {
             put("CROUCH_RIGHT", new Frame[] {
                     new FrameBuilder(spriteSheet.getSprite(1, 1))
                             .withScale(5)
-                            .withBounds(6, 10, 10, 10)
+                            .withBounds(8, 9, 10, 10)
                             .build()
             });
 
@@ -136,7 +136,7 @@ public class Nicolini extends Player {
                     new FrameBuilder(spriteSheet.getSprite(1, 1))
                             .withScale(5)
                             .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                            .withBounds(6, 10, 10, 10)
+                            .withBounds(8, 9, 10, 10)
                             .build()
             });
 
