@@ -355,7 +355,7 @@ public abstract class Map {
         }
         projectileAttacks.removeIf(p -> !p.isAlive());
         for (MeleeAttack m : new java.util.ArrayList<>(meleeAttacks)) {
-            m.update(dtMs, this, player);
+            m.update(dtMs, this, player, player2);
         }
         meleeAttacks.removeIf(m -> !m.isAlive());
     }

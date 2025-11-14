@@ -48,6 +48,8 @@ public abstract class Player2 extends GameObject {
     protected Key MOVE_RIGHT_KEY = Key.L;
     protected Key CROUCH_KEY = Key.K;
     protected Key ATTACK_KEY = Key.U;
+    protected Key PUNCH_KEY = Key.O; // Punch attack key for Player 2
+    protected Key KICK_KEY = Key.Y; // Kick attack key for Player 2
 
 
     // flags
@@ -160,6 +162,46 @@ public abstract class Player2 extends GameObject {
                     map.addProjectileAttack(new ProjectileAttack(spawnX, spawnY, vx, 0f, 1, 4000, true, this));
                 } catch (Exception e) {
                     if (Engine.Debug.ENABLED) System.out.println("DEBUG: Failed to spawn player2 projectile: " + e);
+                }
+            }
+
+            // punch attack input for player 2: create a punch hitbox when punch key is pressed
+            if (attacksEnabled && Keyboard.isKeyDown(PUNCH_KEY) && !keyLocker.isKeyLocked(PUNCH_KEY)) {
+                keyLocker.lockKey(PUNCH_KEY);
+                // punch parameters
+                int punchW = 35; // punch hitbox
+                int punchH = 25; // height of hitbox
+                float punchX = facingDirection == Direction.RIGHT ? 
+                              this.getX() + this.getWidth() - 10 : // closer to right side of player
+                              this.getX() - punchW + 10; // closer to left side of player
+                float punchY = this.getY() + (this.getHeight() / 3f); // upper body level
+                int punchDamage = 1; // moderate damage for punch
+                int punchDuration = 150; // 150ms hitbox duration
+                try {
+                    map.addMeleeAttack(new MeleeAttack(punchX, punchY, punchW, punchH, punchDamage, punchDuration));
+                    if (Engine.Debug.ENABLED) System.out.println("DEBUG: Player 2 punch attack at x=" + punchX + " y=" + punchY);
+                } catch (Exception e) {
+                    if (Engine.Debug.ENABLED) System.out.println("DEBUG: Failed to spawn player2 punch attack: " + e);
+                }
+            }
+
+            // kick attack input for player 2: create a kick hitbox when kick key is pressed
+            if (attacksEnabled && Keyboard.isKeyDown(KICK_KEY) && !keyLocker.isKeyLocked(KICK_KEY)) {
+                keyLocker.lockKey(KICK_KEY);
+                // kick parameters
+                int kickW = 45; // wider hitbox for kick
+                int kickH = 20; // lower height for kick
+                float kickX = facingDirection == Direction.RIGHT ? 
+                             this.getX() + this.getWidth() - 15 : // closer to right side of player
+                             this.getX() - kickW + 15; // closer to left side of player
+                float kickY = this.getY() + (this.getHeight() * 2f / 3f); // lower body level
+                int kickDamage = 3; // higher damage for kick
+                int kickDuration = 200; // 200ms hitbox duration
+                try {
+                    map.addMeleeAttack(new MeleeAttack(kickX, kickY, kickW, kickH, kickDamage, kickDuration));
+                    if (Engine.Debug.ENABLED) System.out.println("DEBUG: Player 2 kick attack at x=" + kickX + " y=" + kickY);
+                } catch (Exception e) {
+                    if (Engine.Debug.ENABLED) System.out.println("DEBUG: Failed to spawn player2 kick attack: " + e);
                 }
             }
 
@@ -340,6 +382,12 @@ public abstract class Player2 extends GameObject {
         }
         if (Keyboard.isKeyUp(ATTACK_KEY)) {
             keyLocker.unlockKey(ATTACK_KEY);
+        }
+        if (Keyboard.isKeyUp(PUNCH_KEY)) {
+            keyLocker.unlockKey(PUNCH_KEY);
+        }
+        if (Keyboard.isKeyUp(KICK_KEY)) {
+            keyLocker.unlockKey(KICK_KEY);
         }
     }
 
