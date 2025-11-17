@@ -20,7 +20,7 @@ public class Nicolini extends Player {
         private boolean shieldActive = false;
         private boolean shieldUsed = false;
         private int shieldCooldownMs = 0;
-        private static final int SHIELD_DURATION_MS = 15000; // 15 seconds
+        private static final int SHIELD_DURATION_MS = 15000; 
     private static final String SHIELD_IMAGE = "shield.png";
     private transient java.awt.image.BufferedImage shieldImage = null;
 
@@ -40,7 +40,7 @@ public class Nicolini extends Player {
     @Override
     public void update() {
                 super.update();
-                // Activate shield on 'C' key if available (only once per game)
+                // Activate the shield using the C key (Can only use this once per life)
                 if (Keyboard.isKeyDown(Key.C) && !shieldActive && !shieldUsed) {
                         shieldActive = true;
                         shieldUsed = true;
@@ -58,15 +58,12 @@ public class Nicolini extends Player {
     @Override
     public void draw(GraphicsHandler graphicsHandler) {
                 super.draw(graphicsHandler);
-                // Draw shield if active (to the right of the character)
+                // shield for Nicolini
                 if (shieldActive && shieldImage != null) {
                         int shieldX = Math.round(getX() - map.getCamera().getX() + getWidth());
                         int shieldY = Math.round(getY() - map.getCamera().getY());
                         graphicsHandler.drawImage(shieldImage, shieldX, shieldY, getWidth(), getHeight());
                 }
-        // Optionally: draw shield uses left above player
-        /*SpriteFont shieldLabel = new SpriteFont("Shields: " + shieldUsesLeft, shieldX, shieldY - 20, "Arial", 12, Color.CYAN);
-        shieldLabel.draw(graphicsHandler);*/
     }
 
     // Reflect projectiles if shield is active (call from collision logic)

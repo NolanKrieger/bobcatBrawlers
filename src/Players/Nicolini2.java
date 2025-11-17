@@ -40,7 +40,7 @@ public class Nicolini2 extends Player2 {
     @Override
     public void update() {
                 super.update();
-                // Activate shield on 'M' key if available (only once per game)
+                // Use shield with M key (Once per life)
                 if (Keyboard.isKeyDown(Key.M) && !shieldActive && !shieldUsed) {
                         shieldActive = true;
                         shieldUsed = true;
@@ -58,15 +58,12 @@ public class Nicolini2 extends Player2 {
     @Override
     public void draw(GraphicsHandler graphicsHandler) {
                 super.draw(graphicsHandler);
-                // Draw shield if active (to the left of the character)
+                // shield for Nicolini2
                 if (shieldActive && shieldImage != null) {
                         int shieldX = Math.round(getX() - map.getCamera().getX() - getWidth());
                         int shieldY = Math.round(getY() - map.getCamera().getY());
                         graphicsHandler.drawImage(shieldImage, shieldX, shieldY, getWidth(), getHeight());
                 }
-        // Optionally: draw shield uses left above player
-        /*SpriteFont shieldLabel = new SpriteFont("Shields: " + shieldUsesLeft, shieldX, shieldY - 20, "Arial", 12, Color.CYAN);
-        shieldLabel.draw(graphicsHandler);*/
     }
 
     // Reflect projectiles if shield is active (call from collision logic)
