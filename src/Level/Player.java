@@ -15,6 +15,9 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 public abstract class Player extends GameObject {
+        public int getAttackDamage() {
+            return attackDamage;
+        }
     // values that affect player movement
     // these should be set in a subclass
     protected float walkSpeed = 0;
@@ -56,6 +59,8 @@ public abstract class Player extends GameObject {
     protected boolean isInvincible = false; // if true, player cannot be hurt by enemies (good for testing)
     // for the health system
     protected boolean attacksEnabled = true;
+    // amount of damage player's attacks deal which is 1
+    protected int attackDamage = 1;
     public void setAttacksEnabled(boolean enabled) {
         this.attacksEnabled = enabled;
         if (!enabled) {
@@ -159,9 +164,9 @@ public abstract class Player extends GameObject {
                 float spawnX = facingDirection == Direction.RIGHT ? this.getX() + this.getWidth() + 4f : this.getX() - projW - 4f;
                 float spawnY = this.getY() + (this.getHeight() / 2f) - (projH / 2f);
                 try {
-                    map.addProjectileAttack((new ProjectileAttack(spawnX, spawnY, vx, 0f, 1, 4000, true, this)));
+                    map.addProjectileAttack((new ProjectileAttack(spawnX, spawnY, vx, 0f, attackDamage, 4000, true, this)));
                 } catch (Exception e) {
-                if (Engine.Debug.ENABLED) System.out.println("DEBUG: Failed to spawn player projectile: " + e);
+                    if (Engine.Debug.ENABLED) System.out.println("DEBUG: Failed to spawn player projectile: " + e);
                 }
             }
 

@@ -78,6 +78,10 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
     private AudioPlayer loseSoundPlayer;
     // Audio player for hurt sound effect
     private AudioPlayer hurtSoundPlayer;
+    // Rain of pencils hazard
+    private int pencilRainTimerMs = 0;
+    private final int PENCIL_RAIN_INTERVAL_MS = 800; // spawn every 0.8s
+    private final float PENCIL_FALL_SPEED = 220f; // pixels per second downward
 
     public PlayLevelScreen(ScreenCoordinator screenCoordinator) {
         this.screenCoordinator = screenCoordinator;
@@ -278,6 +282,34 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                 // Update projectile types (X and N key handling)
                 ProjectileAttack.updateProjectileTypes();
 
+                // Raining Pencils, Computers, or Burritos depending on the map
+                pencilRainTimerMs += 16;
+                if (pencilRainTimerMs >= PENCIL_RAIN_INTERVAL_MS) {
+                    pencilRainTimerMs = 0;
+                    try {
+                        // spawn at a random X coordinate slightly above the map
+                        float camX = map.getCamera().getX();
+                        float camY = map.getCamera().getY();
+                        int screenW = ScreenManager.getScreenWidth();
+                        float spawnX = camX + (float)(Math.random() * screenW);
+                        float spawnY = camY - 32f; // spawn above view
+                        float vx = 0f;
+                        float vy = PENCIL_FALL_SPEED;
+                        // Choose image based on current map
+                        String hazardImage = "PencilPixel.png";
+                        if (map instanceof CCEMap) {
+                            hazardImage = "ComputerPixel.png";
+                        } else if (map instanceof QuadMap) {
+                            hazardImage = "BurritoPixel.png";
+                        } else if (map instanceof BobcatMap) {
+                            hazardImage = "PencilPixel.png";
+                        }
+                        // use overloaded constructor to force image and damage (1)
+                        map.addProjectileAttack(new ProjectileAttack(spawnX, spawnY, vx, vy, 1, 8000, false, null, hazardImage));
+                    } catch (Exception ignored) {
+                    }
+                }
+
                 // Update map (includes projectiles and collisions)
                 map.update(player, player2);
 
@@ -328,6 +360,12 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                     int damageTaken = 0;
                     if (maxHealth > 0) {
                         damageTaken = Math.max(0, Math.min(p1JumpImages.length, maxHealth - health));
+                        // If Chester is player, and attackDamage is 2, skip two images per hit
+                        if (player instanceof Chester && player.getAttackDamage() == 3) {
+                            // Each hit already reduces health by 3, so damageTaken increases by 3 per hit
+                            // No further adjustment needed, as health is already reduced by 3
+                            damageTaken = Math.max(0, Math.min(p1JumpImages.length, damageTaken));
+                        }
                     }
                     if (damageTaken > 0) {
                         int idx = damageTaken - 1;
@@ -379,8 +417,14 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                         int health2 = player2.getHealth();
                         int maxHealth2 = player2.getMaxHealth();
                         int idx2 = -1;
+                        int damageTaken2 = 0;
                         if (maxHealth2 > 0) {
-                            int damageTaken2 = Math.max(0, Math.min(p2JumpImages.length, maxHealth2 - health2));
+                            damageTaken2 = Math.max(0, Math.min(p2JumpImages.length, maxHealth2 - health2));
+                            if (player2 instanceof Chester2 && player2.getAttackDamage() == 3) {
+                                // Each hit already reduces health by 3, so damageTaken2 increases by 3 per hit
+                                // No further adjustment needed, as health is already reduced by 3
+                                damageTaken2 = Math.max(0, Math.min(p2JumpImages.length, damageTaken2));
+                            }
                             if (damageTaken2 > 0) {
                                 idx2 = damageTaken2 - 1;
                             }

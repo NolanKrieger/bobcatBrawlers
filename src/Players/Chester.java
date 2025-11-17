@@ -18,10 +18,12 @@ public class Chester extends Player {
         super(new SpriteSheet(ImageLoader.load("chestersprite.png"), 24, 24), x, y, "STAND_RIGHT");
         gravity = 1.0f;
         terminalVelocityY = 8f;
-        jumpHeight = 16f;
+        jumpHeight = 10f;
         jumpDegrade = .5f;
-        walkSpeed = 5.0f;
+        walkSpeed = 3.0f;
         momentumYIncrease = .5f;
+                // Chester deals more damage than the other characters
+                this.attackDamage = 2;
     }
 
     

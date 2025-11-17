@@ -16,7 +16,7 @@ public class ProjectileAttack {
     private static int player2ProjectileType = 0;
     private static String[] projectileImages = {"PencilPixel.png", "BurritoPixel.png", "ComputerPixel.png"};
     private static String[] projectileNames = {"Pencil", "Burrito", "Computer"}; // Display names for UI
-    private static float[] projectileDamage = {0.5f, 0.5f, 1.0f}; // PencilPixel=0.25, BurritoPixel=0.5, ComputerPixel=1.0
+    private static float[] projectileDamage = {1.0f, 1.0f, 1.0f};
     private static boolean xKeyWasPressed = false; // For player 1
     private static boolean nKeyWasPressed = false; // For player 2
     // Audio for firing projectile (loaded once)
@@ -56,16 +56,48 @@ public class ProjectileAttack {
             projectileType = player1ProjectileType;
         }
         
-        // Use damage and image based on the appropriate player's projectile type
-        this.damage = projectileDamage[projectileType];
         this.projectileImage = ImageLoader.load(projectileImages[projectileType]);
-        // play firing sound when projectile is spawned by a player
+        // Chesters attack change
+        if (fromPlayer) {
+            this.damage = damage;
+        } else {
+            this.damage = projectileDamage[projectileType];
+        }
+        // play firing sound when projectile is used
         try {
             if (fromPlayer && projectileSound != null) projectileSound.play();
         } catch (Exception e) {
             if (Engine.Debug.ENABLED) System.out.println("DEBUG: Failed to play projectile sound: " + e);
         }
     }
+
+        // Overloaded constructor: allow explicit image and damage (useful for enemy hazards)
+        public ProjectileAttack(float x, float y, float vx, float vy, int damage, int lifeMs, boolean fromPlayer, GameObject owner, String imageOverride) {
+            this.x = x;
+            this.y = y;
+            this.vx = vx;
+            this.vy = vy;
+            this.lifeMs = lifeMs;
+            this.fromPlayer = fromPlayer;
+            this.owner = owner;
+            this.ageMs = 0;
+            this.alive = true;
+            //  image override
+            try {
+                this.projectileImage = ImageLoader.load(imageOverride);
+            } catch (RuntimeException e) {
+                int projectileType = player1ProjectileType;
+                this.projectileImage = ImageLoader.load(projectileImages[projectileType]);
+            }
+            // Use the provided damage value directly
+            this.damage = damage;
+            // play firing sound when projectile is spawned by a player
+            try {
+                if (fromPlayer && projectileSound != null) projectileSound.play();
+            } catch (Exception e) {
+                if (Engine.Debug.ENABLED) System.out.println("DEBUG: Failed to play projectile sound: " + e);
+            }
+        }
     
     // Static method to check for 'X' and 'N' key presses and cycle projectile types
     public static void updateProjectileTypes() {

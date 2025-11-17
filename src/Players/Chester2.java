@@ -18,11 +18,13 @@ public class Chester2 extends Player2 {
         super(new SpriteSheet(ImageLoader.load("chestersprite.png"), 24, 24), x, y, "STAND_RIGHT");
         gravity = 1.0f;
         terminalVelocityY = 8f;
-        jumpHeight = 16f;
+        jumpHeight = 10f;
         jumpDegrade = .5f;
-        walkSpeed = 5.0f;
+        walkSpeed = 3.0f;
         momentumYIncrease = .5f;
-    }
+                // Chester2 deals more damage than the other players now
+                this.attackDamage = 2;
+        }
 
     
 
