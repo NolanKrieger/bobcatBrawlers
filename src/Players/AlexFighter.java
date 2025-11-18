@@ -15,12 +15,12 @@ import java.util.HashMap;
 public class AlexFighter extends Player {
 
     public AlexFighter(float x, float y) {
-        super(new SpriteSheet(ImageLoader.load("alexupdated6.png"), 24, 24), x, y, "STAND_RIGHT");
+        super(new SpriteSheet(ImageLoader.load("alexupdated67.png"), 24, 24), x, y, "STAND_RIGHT");
         gravity = 1.0f;
         terminalVelocityY = 8f;
         jumpHeight = 16f;
         jumpDegrade = .5f;
-        walkSpeed = 5.0f;
+        walkSpeed = 10.0f;
         momentumYIncrease = .5f;
     }
 
@@ -58,15 +58,15 @@ public class AlexFighter extends Player {
                             .withScale(5)
                             .withBounds(8, 9, 10, 10)
                             .build(),
-                    new FrameBuilder(spriteSheet.getSprite(1, 1), 14)
-                            .withScale(5)
-                            .withBounds(8, 9, 10, 10)
-                            .build(),
-                    new FrameBuilder(spriteSheet.getSprite(1, 2), 14)
+                    new FrameBuilder(spriteSheet.getSprite(0, 0), 14)
                             .withScale(5)
                             .withBounds(8, 9, 10, 10)
                             .build(),
                     new FrameBuilder(spriteSheet.getSprite(1, 3), 14)
+                            .withScale(5)
+                            .withBounds(8, 9, 10, 10)
+                            .build(),
+                    new FrameBuilder(spriteSheet.getSprite(0, 0), 14)
                             .withScale(5)
                             .withBounds(8, 9, 10, 10)
                             .build()
@@ -78,12 +78,7 @@ public class AlexFighter extends Player {
                             .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
                             .withBounds(8, 9, 10, 10)
                             .build(),
-                    new FrameBuilder(spriteSheet.getSprite(1, 1), 14)
-                            .withScale(5)
-                            .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
-                            .withBounds(8, 9, 10, 10)
-                            .build(),
-                    new FrameBuilder(spriteSheet.getSprite(1, 2), 14)
+                    new FrameBuilder(spriteSheet.getSprite(0, 0), 14)
                             .withScale(5)
                             .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
                             .withBounds(8, 9, 10, 10)
@@ -92,18 +87,23 @@ public class AlexFighter extends Player {
                             .withScale(5)
                             .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
                             .withBounds(8, 9, 10, 10)
+                            .build(),
+                    new FrameBuilder(spriteSheet.getSprite(0, 0), 14)
+                            .withScale(5)
+                            .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
+                            .withBounds(8, 9, 10, 10)
                             .build()
             });
 
             put("JUMP_RIGHT", new Frame[] {
-                    new FrameBuilder(spriteSheet.getSprite(2, 0))
+                    new FrameBuilder(spriteSheet.getSprite(3, 0))
                             .withScale(5)
                             .withBounds(8, 9, 10, 10)
                             .build()
             });
 
             put("JUMP_LEFT", new Frame[] {
-                    new FrameBuilder(spriteSheet.getSprite(2, 0))
+                    new FrameBuilder(spriteSheet.getSprite(3, 0))
                             .withScale(5)
                             .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
                             .withBounds(8, 9, 10, 10)

@@ -35,6 +35,8 @@ public class TutorialScreen extends Screen implements PlayerListener {
    protected SpriteFont DkeyDescription;
    protected SpriteFont ShootAttackDescription;
    protected SpriteFont ChangeAttackDescription;
+   protected SpriteFont PunchAttackDescription;
+   protected SpriteFont KickAttackDescription;
    protected SpriteFont returnInstructionsLabel;
    protected TutorialLoseScreen tutorialLoseScreen;
    protected boolean showingLevelLose = false;
@@ -92,6 +94,8 @@ public class TutorialScreen extends Screen implements PlayerListener {
        DkeyDescription = new SpriteFont("D-To Move Right", 250, 178, "Times New Roman", 18, Color.white);
        ShootAttackDescription = new SpriteFont("Key E-To Shoot", 950, 78, "Times New Roman", 18, Color.white);
        ChangeAttackDescription = new SpriteFont("Key X-To Change Attacks", 950, 99, "Times New Roman", 18, Color.white);
+       PunchAttackDescription = new SpriteFont("Key Q-To Punch", 950, 119, "Times New Roman", 18, Color.white);
+       KickAttackDescription = new SpriteFont("Key R-To Kick", 950, 140, "Times New Roman", 18, Color.white);
        returnInstructionsLabel = new SpriteFont("Press Space to return to the menu", 20, 740, "Times New Roman", 18, Color.white);
        keyLocker.lockKey(Key.SPACE);
    }
@@ -138,6 +142,8 @@ public class TutorialScreen extends Screen implements PlayerListener {
        DkeyDescription.draw(graphicsHandler);
        ShootAttackDescription.draw(graphicsHandler);
        ChangeAttackDescription.draw(graphicsHandler);
+       PunchAttackDescription.draw(graphicsHandler);
+       KickAttackDescription.draw(graphicsHandler);
        returnInstructionsLabel.draw(graphicsHandler);
    }
 }

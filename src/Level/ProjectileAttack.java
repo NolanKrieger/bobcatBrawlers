@@ -16,7 +16,7 @@ public class ProjectileAttack {
     private static int player2ProjectileType = 0;
     private static String[] projectileImages = {"PencilPixel.png", "BurritoPixel.png", "ComputerPixel.png"};
     private static String[] projectileNames = {"Pencil", "Burrito", "Computer"}; // Display names for UI
-    private static float[] projectileDamage = {0.5f, 0.5f, 1.0f}; // PencilPixel=0.25, BurritoPixel=0.5, ComputerPixel=1.0
+    private static float[] projectileDamage = {1.0f, 1.0f, 1.0f};
     private static boolean xKeyWasPressed = false; // For player 1
     private static boolean nKeyWasPressed = false; // For player 2
     // Audio for firing projectile (loaded once)
@@ -56,16 +56,48 @@ public class ProjectileAttack {
             projectileType = player1ProjectileType;
         }
         
-        // Use damage and image based on the appropriate player's projectile type
-        this.damage = projectileDamage[projectileType];
         this.projectileImage = ImageLoader.load(projectileImages[projectileType]);
-        // play firing sound when projectile is spawned by a player
+        // Chesters attack change
+        if (fromPlayer) {
+            this.damage = damage;
+        } else {
+            this.damage = projectileDamage[projectileType];
+        }
+        // play firing sound when projectile is used
         try {
             if (fromPlayer && projectileSound != null) projectileSound.play();
         } catch (Exception e) {
             if (Engine.Debug.ENABLED) System.out.println("DEBUG: Failed to play projectile sound: " + e);
         }
     }
+
+        // Overloaded constructor: allow explicit image and damage (useful for enemy hazards)
+        public ProjectileAttack(float x, float y, float vx, float vy, int damage, int lifeMs, boolean fromPlayer, GameObject owner, String imageOverride) {
+            this.x = x;
+            this.y = y;
+            this.vx = vx;
+            this.vy = vy;
+            this.lifeMs = lifeMs;
+            this.fromPlayer = fromPlayer;
+            this.owner = owner;
+            this.ageMs = 0;
+            this.alive = true;
+            //  image override
+            try {
+                this.projectileImage = ImageLoader.load(imageOverride);
+            } catch (RuntimeException e) {
+                int projectileType = player1ProjectileType;
+                this.projectileImage = ImageLoader.load(projectileImages[projectileType]);
+            }
+            // Use the provided damage value directly
+            this.damage = damage;
+            // play firing sound when projectile is spawned by a player
+            try {
+                if (fromPlayer && projectileSound != null) projectileSound.play();
+            } catch (Exception e) {
+                if (Engine.Debug.ENABLED) System.out.println("DEBUG: Failed to play projectile sound: " + e);
+            }
+        }
     
     // Static method to check for 'X' and 'N' key presses and cycle projectile types
     public static void updateProjectileTypes() {
@@ -146,30 +178,55 @@ public class ProjectileAttack {
             return;
         }
         Rectangle projRect = new Rectangle(x, y, width, height);
-        // If projectile is from a player, it should hit the other player (not its owner)
+        // Shield collision rectangles
+        Rectangle shieldRect1 = null;
+        Rectangle shieldRect2 = null;
+        if (player instanceof Players.Nicolini && ((Players.Nicolini)player).canReflectProjectiles()) {
+            float shieldX = player.getX() + player.getWidth();
+            float shieldY = player.getY();
+            shieldRect1 = new Rectangle(shieldX, shieldY, player.getWidth(), player.getHeight());
+        }
+        if (player2 instanceof Players.Nicolini2 && ((Players.Nicolini2)player2).canReflectProjectiles()) {
+            float shieldX = player2.getX() - player2.getWidth();
+            float shieldY = player2.getY();
+            shieldRect2 = new Rectangle(shieldX, shieldY, player2.getWidth(), player2.getHeight());
+        }
+        // If projectile is from a player, it can hit either player (including owner/self)
         if (fromPlayer) {
-            if (owner != null) {
-                // owner is player (player1)
-                if (owner == player && player2 != null) {
-                    if (projRect.intersects(player2.getBounds())) {
-                        if (Engine.Debug.ENABLED) System.out.println("DEBUG: Projectile from player hit player2 at x=" + x + " y=" + y + " dmg=" + damage);
-                        player2.damage(Math.round(damage));
-                        alive = false;
-                        return;
-                    }
-                }
-                // owner is player2
-                else if (owner == player2 && player != null) {
-                    if (projRect.intersects(player.getBounds())) {
-                        if (Engine.Debug.ENABLED) System.out.println("DEBUG: Projectile from player hit player at x=" + x + " y=" + y + " dmg=" + damage + " healthBefore=" + player.getHealth());
-                        player.damage(Math.round(damage));
-                        alive = false;
-                        return;
-                    }
-                }
+            if (shieldRect1 != null && projRect.intersects(shieldRect1)) {
+                vx = -vx;
+                if (Engine.Debug.ENABLED) System.out.println("DEBUG: Projectile reflected by player1 shield at x=" + x + " y=" + y);
+                return;
+            }
+            if (shieldRect2 != null && projRect.intersects(shieldRect2)) {
+                vx = -vx;
+                if (Engine.Debug.ENABLED) System.out.println("DEBUG: Projectile reflected by player2 shield at x=" + x + " y=" + y);
+                return;
+            }
+            if (player != null && projRect.intersects(player.getBounds())) {
+                if (Engine.Debug.ENABLED) System.out.println("DEBUG: Player hit by own projectile at x=" + x + " y=" + y + " dmg=" + damage);
+                player.damage(Math.round(damage));
+                alive = false;
+                return;
+            }
+            if (player2 != null && projRect.intersects(player2.getBounds())) {
+                if (Engine.Debug.ENABLED) System.out.println("DEBUG: Player2 hit by own projectile at x=" + x + " y=" + y + " dmg=" + damage);
+                player2.damage(Math.round(damage));
+                alive = false;
+                return;
             }
         } else {
             // from enemy: hit whichever player it intersects
+            if (shieldRect1 != null && projRect.intersects(shieldRect1)) {
+                vx = -vx;
+                if (Engine.Debug.ENABLED) System.out.println("DEBUG: Enemy projectile reflected by player1 shield at x=" + x + " y=" + y);
+                return;
+            }
+            if (shieldRect2 != null && projRect.intersects(shieldRect2)) {
+                vx = -vx;
+                if (Engine.Debug.ENABLED) System.out.println("DEBUG: Enemy projectile reflected by player2 shield at x=" + x + " y=" + y);
+                return;
+            }
             if (player != null && projRect.intersects(player.getBounds())) {
                 if (Engine.Debug.ENABLED) System.out.println("DEBUG: Enemy projectile hit player at x=" + x + " y=" + y + " dmg=" + damage + " healthBefore=" + player.getHealth());
                 player.damage(Math.round(damage));

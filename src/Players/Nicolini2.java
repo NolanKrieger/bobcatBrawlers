@@ -12,7 +12,17 @@ import java.util.HashMap;
 
 // This is the class for the Cat player character
 // basically just sets some values for physics and then defines animations
+
+import Engine.Keyboard;
+import Engine.Key;
+
 public class Nicolini2 extends Player2 {
+        private boolean shieldActive = false;
+        private boolean shieldUsed = false;
+        private int shieldCooldownMs = 0;
+        private static final int SHIELD_DURATION_MS = 15000; // 15 seconds
+    private static final String SHIELD_IMAGE = "shield.png";
+    private transient java.awt.image.BufferedImage shieldImage = null;
 
     public Nicolini2(float x, float y) {
         super(new SpriteSheet(ImageLoader.load("nicolinisprite.png"), 24, 24), x, y, "STAND_RIGHT");
@@ -22,18 +32,45 @@ public class Nicolini2 extends Player2 {
         jumpDegrade = .5f;
         walkSpeed = 5.0f;
         momentumYIncrease = .5f;
+        try {
+            shieldImage = ImageLoader.load(SHIELD_IMAGE);
+        } catch (Exception ignored) {}
     }
 
-    
-
+    @Override
     public void update() {
-        super.update();
+                super.update();
+                // Use shield with M key (Once per life)
+                if (Keyboard.isKeyDown(Key.M) && !shieldActive && !shieldUsed) {
+                        shieldActive = true;
+                        shieldUsed = true;
+                        shieldCooldownMs = SHIELD_DURATION_MS;
+                }
+                // Shield timer
+                if (shieldActive) {
+                        shieldCooldownMs -= 16;
+                        if (shieldCooldownMs <= 0) {
+                                shieldActive = false;
+                        }
+                }
     }
 
+    @Override
     public void draw(GraphicsHandler graphicsHandler) {
-        super.draw(graphicsHandler);
-        //drawBounds(graphicsHandler, new Color(255, 0, 0, 170));
+                super.draw(graphicsHandler);
+                // shield for Nicolini2
+                if (shieldActive && shieldImage != null) {
+                        int shieldX = Math.round(getX() - map.getCamera().getX() - getWidth());
+                        int shieldY = Math.round(getY() - map.getCamera().getY());
+                        graphicsHandler.drawImage(shieldImage, shieldX, shieldY, getWidth(), getHeight());
+                }
     }
+
+    // Reflect projectiles if shield is active (call from collision logic)
+    public boolean canReflectProjectiles() {
+        return shieldActive;
+    }
+
 
     @Override
     public HashMap<String, Frame[]> loadAnimations(SpriteSheet spriteSheet) {
