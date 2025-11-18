@@ -43,6 +43,12 @@ public abstract class Player2 extends GameObject {
     protected AirGroundState previousAirGroundState;
     protected LevelState levelState;
 
+    protected float dashSpeed = 20.0f;
+    protected int dashDuration = 200;
+    protected int dashCooldown = 500;
+    protected int dashTimer = 0;
+    protected int dashCooldownTimer = 2;
+    protected boolean isDashing = false; 
    
     protected ArrayList<PlayerListener> listeners = new ArrayList<>();
 
@@ -55,6 +61,7 @@ public abstract class Player2 extends GameObject {
     protected Key ATTACK_KEY = Key.U;
     protected Key PUNCH_KEY = Key.O; // Punch attack key for Player 2
     protected Key KICK_KEY = Key.Y; // Kick attack key for Player 2
+    protected Key DASH_KEY = Key.H; // Dash key
 
 
     // flags
@@ -123,6 +130,48 @@ public abstract class Player2 extends GameObject {
                 previousPlayerState = playerState;
                 handlePlayerState();
             } while (previousPlayerState != playerState);
+
+
+
+            if (dashTimer > 0) {
+                dashTimer -= 16;
+                if (facingDirection == Direction.LEFT) {
+                    moveAmountX -= dashSpeed;
+                } else if (facingDirection == Direction.RIGHT) {
+                    moveAmountX += dashSpeed;
+                }
+   
+                if (dashTimer <= 0) {
+                    isDashing = false;
+                    if (Engine.Debug.ENABLED) {
+                        System.out.println("DEBUG: Dash ended!");
+                    }
+                }
+            }
+   
+            if (dashCooldownTimer > 0) {
+                dashCooldownTimer -= 16;
+                if (dashCooldownTimer < 0) dashCooldownTimer = 0;
+            }
+   
+            if (Keyboard.isKeyDown(DASH_KEY) && !keyLocker.isKeyLocked(DASH_KEY)) {
+                keyLocker.lockKey(DASH_KEY);
+ 
+ 
+                if (!isDashing && dashCooldownTimer == 0) {
+                    isDashing = true;
+                    dashTimer = dashDuration;
+                    dashCooldownTimer = dashCooldown;
+                    if (Engine.Debug.ENABLED) {
+                        System.out.println("DEBUG: Dash started!");
+                    }
+                } else {
+ 
+ 
+                    playerState = PlayerState.STANDING;
+                }
+            }
+ 
 
             previousAirGroundState = airGroundState;
 
@@ -393,6 +442,9 @@ public abstract class Player2 extends GameObject {
         }
         if (Keyboard.isKeyUp(KICK_KEY)) {
             keyLocker.unlockKey(KICK_KEY);
+        }
+        if (Keyboard.isKeyUp(DASH_KEY)) {
+            keyLocker.unlockKey(DASH_KEY);
         }
     }
 
