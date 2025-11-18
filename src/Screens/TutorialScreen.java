@@ -37,6 +37,7 @@ public class TutorialScreen extends Screen implements PlayerListener {
    protected SpriteFont ChangeAttackDescription;
    protected SpriteFont PunchAttackDescription;
    protected SpriteFont KickAttackDescription;
+   protected SpriteFont NicoliniShieldDescription;
    protected SpriteFont returnInstructionsLabel;
    protected TutorialLoseScreen tutorialLoseScreen;
    protected boolean showingLevelLose = false;
@@ -96,6 +97,7 @@ public class TutorialScreen extends Screen implements PlayerListener {
        ChangeAttackDescription = new SpriteFont("Key X-To Change Attacks", 950, 99, "Times New Roman", 18, Color.white);
        PunchAttackDescription = new SpriteFont("Key Q-To Punch", 950, 119, "Times New Roman", 18, Color.white);
        KickAttackDescription = new SpriteFont("Key R-To Kick", 950, 140, "Times New Roman", 18, Color.white);
+       NicoliniShieldDescription = new SpriteFont("For Nicolini: Press Key C", 950, 162, "Times New Roman", 18, Color.white);
        returnInstructionsLabel = new SpriteFont("Press Space to return to the menu", 20, 740, "Times New Roman", 18, Color.white);
        keyLocker.lockKey(Key.SPACE);
    }
@@ -144,6 +146,7 @@ public class TutorialScreen extends Screen implements PlayerListener {
        ChangeAttackDescription.draw(graphicsHandler);
        PunchAttackDescription.draw(graphicsHandler);
        KickAttackDescription.draw(graphicsHandler);
+       NicoliniShieldDescription.draw(graphicsHandler);
        returnInstructionsLabel.draw(graphicsHandler);
    }
 }
