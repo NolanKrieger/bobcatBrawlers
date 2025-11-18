@@ -98,7 +98,7 @@ public abstract class Player2 extends GameObject {
 
     public Player2(SpriteSheet spriteSheet, float x, float y, String startingAnimationName) {
         super(spriteSheet, x, y, startingAnimationName);
-        facingDirection = Direction.RIGHT;
+        facingDirection = Direction.LEFT;
         airGroundState = AirGroundState.AIR;
         previousAirGroundState = airGroundState;
         playerState = PlayerState.STANDING;
