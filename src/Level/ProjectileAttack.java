@@ -7,6 +7,14 @@ import Engine.ImageLoader;
 import Engine.Keyboard;
 import Engine.Key;
 import Engine.AudioPlayer;
+import Players.Chester;
+import Players.Chester2;
+import Players.AlexFighter;
+import Players.AlexFighter2;
+import Players.Nicolini;
+import Players.Nicolini2;
+import Players.Boomer;
+import Players.Boomer2;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 
@@ -63,7 +71,21 @@ public class ProjectileAttack {
         // Use projectile type damage for both player and enemy projectiles
         this.damage = projectileDamage[projectileType];
         
-        // play firing sound when projectile is used
+        // Chester gets 1.2x damage multiplier when using burrito (projectile type 1)
+        if (projectileType == 1 && (owner instanceof Chester || owner instanceof Chester2)) {
+            this.damage *= 1.3f;
+        }
+        
+        // Alex gets 1.25x speed multiplier when using computer (projectile type 2)
+        if (projectileType == 2 && (owner instanceof AlexFighter || owner instanceof AlexFighter2)) {
+            this.vx *= 1.25f;
+            this.vy *= 1.25f;
+        }
+        
+        // Prof. Nicolini gets 1.3x damage multiplier when using pencil (projectile type 0)
+        if (projectileType == 0 && (owner instanceof Nicolini || owner instanceof Nicolini2 || owner instanceof Boomer || owner instanceof Boomer2)) {
+            this.damage *= 1.3f;
+        }
         try {
             if (fromPlayer && projectileSound != null) projectileSound.play();
         } catch (Exception e) {
