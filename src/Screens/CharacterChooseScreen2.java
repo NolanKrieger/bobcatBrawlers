@@ -32,7 +32,14 @@ public class CharacterChooseScreen2 extends Screen {
 
    String[] characters = {"Alex", "Prof. Nicolini", "Boomer", "Chester", "Marie", "Judy"};
 
-
+   String[] characterDescriptions = {
+    "Fast & Agile", // Alex
+    "Shield", // Prof. Nicolini
+    "Double Jump", // Boomer
+    "Tank + High Damage", // Chester
+    "", // Marie
+    "" // Judy
+};
 
 
    Color[] colors={
@@ -73,8 +80,8 @@ public class CharacterChooseScreen2 extends Screen {
        characterImages = new BufferedImage[characters.length];
 
     // For now, just add one sprite (Alex)
-    SpriteSheet alexSheet = new SpriteSheet(ImageLoader.load("alexsprite5.png"), 24, 24);
-    characterImages[0] = alexSheet.getSprite(0, 0);
+    SpriteSheet alexSheet = new SpriteSheet(ImageLoader.load("alexupdated67.png"), 24, 24);
+    characterImages[0] = alexSheet.getSprite(6, 0);
 
     SpriteSheet BoomerSheet = new SpriteSheet(ImageLoader.load("boomersprite1.png"), 24, 24);
     characterImages[2] = BoomerSheet.getSprite(0, 0);
@@ -181,6 +188,20 @@ if (!keyLocker.isKeyLocked(Key.SPACE) && Keyboard.isKeyDown(Key.SPACE)) {
             graphicsHandler.drawImage(characterImages[i], spriteX, spriteY, spriteWidth, spriteHeight);
         }
     
+        if (i < characterDescriptions.length && characterDescriptions[i] != null) {
+            SpriteFont descriptionLabel = new SpriteFont(
+                characterDescriptions[i], 
+                x + slotWidth / 2 - (characterDescriptions[i].length() * 3), 
+                screenHeight - 200, 
+                "Arial", 
+                14, 
+                Color.CYAN 
+            );
+            descriptionLabel.setOutlineColor(Color.BLACK);
+            descriptionLabel.setOutlineThickness(2);
+            descriptionLabel.draw(graphicsHandler);
+        }
+
         // Draw name label
         SpriteFont nameLabel = new SpriteFont(characters[i], x + slotWidth / 2 - (characters[i].length() * 4), screenHeight - 60, "Arial", 18, Color.WHITE);
         nameLabel.setOutlineColor(Color.BLACK);

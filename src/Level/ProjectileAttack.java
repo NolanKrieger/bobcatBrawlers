@@ -190,12 +190,26 @@ public class ProjectileAttack {
         Rectangle shieldRect1 = null;
         Rectangle shieldRect2 = null;
         if (player instanceof Players.Nicolini && ((Players.Nicolini)player).canReflectProjectiles()) {
-            float shieldX = player.getX() + player.getWidth();
+            float shieldX;
+            if (player.getFacingDirection() == Utils.Direction.LEFT) {
+                // Shield should be on the left when facing left
+                shieldX = player.getX() - player.getWidth();
+            } else {
+                // Shield should be on the right when facing right
+                shieldX = player.getX() + player.getWidth();
+            }
             float shieldY = player.getY();
             shieldRect1 = new Rectangle(shieldX, shieldY, player.getWidth(), player.getHeight());
         }
         if (player2 instanceof Players.Nicolini2 && ((Players.Nicolini2)player2).canReflectProjectiles()) {
-            float shieldX = player2.getX() - player2.getWidth();
+            float shieldX;
+            if (player2.getFacingDirection() == Utils.Direction.LEFT) {
+                // Shield should be on the left when facing left
+                shieldX = player2.getX() - player2.getWidth();
+            } else {
+                // Shield should be on the right when facing right
+                shieldX = player2.getX() + player2.getWidth();
+            }
             float shieldY = player2.getY();
             shieldRect2 = new Rectangle(shieldX, shieldY, player2.getWidth(), player2.getHeight());
         }
