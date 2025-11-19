@@ -12,6 +12,7 @@ public class QuadMap extends Map {
     public QuadMap() {
         super("quad_map.txt", new CommonTileset());
         this.playerStartPosition = getMapTile(2, 11).getLocation();
+        setBackgroundImage("mapImages/pixQuad.png");
     }
 
 }

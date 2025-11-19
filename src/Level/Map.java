@@ -2,9 +2,11 @@ package Level;
 
 import Engine.Config;
 import Engine.GraphicsHandler;
+import Engine.ImageLoader;
 import Engine.ScreenManager;
 import Utils.Point;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -60,6 +62,9 @@ public abstract class Map {
 
     // if set to false, camera will not move as player moves
     protected boolean adjustCamera = true;
+
+    // optional background image for the map
+    protected BufferedImage backgroundImage;
 
     // map tiles in map that are animated
     protected ArrayList<MapTile> animatedMapTiles;
@@ -426,7 +431,9 @@ public abstract class Map {
 
     public void draw(GraphicsHandler graphicsHandler) {
         camera.draw(graphicsHandler);
-
+    }
+    
+    public void drawProjectiles(GraphicsHandler graphicsHandler) {
         // draw active projectiles and melee hitboxes (debug visuals)
         for (ProjectileAttack p : projectileAttacks) {
             p.draw(graphicsHandler, this);
@@ -434,6 +441,18 @@ public abstract class Map {
         for (MeleeAttack m : meleeAttacks) {
             m.draw(graphicsHandler, this);
         }
+    }
+    
+    public void setBackgroundImage(String imagePath) {
+        try {
+            this.backgroundImage = ImageLoader.load(imagePath);
+        } catch (RuntimeException e) {
+            System.out.println("Map: Failed to load background image: " + imagePath);
+        }
+    }
+    
+    public BufferedImage getBackgroundImage() {
+        return backgroundImage;
     }
 
     public int getEndBoundX() { return endBoundX; }

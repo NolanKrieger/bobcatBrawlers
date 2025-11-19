@@ -347,6 +347,17 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         switch (playLevelScreenState) {
             case RUNNING:
                 map.draw(graphicsHandler);
+                
+                // Draw background image (over map tiles, under players/projectiles)
+                BufferedImage bgImage = map.getBackgroundImage();
+                if (bgImage != null) {
+                    int w = ScreenManager.getScreenWidth();
+                    int h = ScreenManager.getScreenHeight();
+                    graphicsHandler.drawImage(bgImage, 0, 0, w, h);
+                }
+                
+                // Draw projectiles over the background image
+                map.drawProjectiles(graphicsHandler);
 
                 // --- Player 1 ---
                 player.draw(graphicsHandler);
@@ -494,7 +505,6 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
 
                 // Draw power-up selection boxes
                 drawPowerUpSelectionUI(graphicsHandler);
-                
 
                 break;
 
