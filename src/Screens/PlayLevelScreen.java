@@ -522,17 +522,50 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
 
     @Override
     public void onDeath() {
-        if (playLevelScreenState != PlayLevelScreenState.LEVEL_LOSE) {
-            playLevelScreenState = PlayLevelScreenState.LEVEL_LOSE;
-            // stop level background music and play death sound
-            stopMusic();
-            try {
-                loseSoundPlayer = new AudioPlayer("Resources/Sounds/Death.wav");
-                loseSoundPlayer.play();
-            } catch (Exception e) {
-                System.out.println("Failed to play lose sound: " + e.getMessage());
+        // Check which player died and respawn just that player
+        if (player != null && player.getHealth() == 0) {
+            respawnPlayer(1);
+        } else if (player2 != null && player2.getHealth() == 0) {
+            respawnPlayer(2);
+        }
+    }
+    
+    private void respawnPlayer(int playerNum) {
+        try {
+            loseSoundPlayer = new AudioPlayer("Resources/Sounds/Death.wav");
+            loseSoundPlayer.play();
+        } catch (Exception e) {
+            System.out.println("Failed to play respawn sound: " + e.getMessage());
+        }
+        
+        if (playerNum == 1) {
+            int p1Index = CharacterChooseScreen2.player1CharacterIndex;
+            float p1StartX = map.getPlayerStartPosition().x;
+            float p1StartY = map.getPlayerStartPosition().y;
+            
+            switch (p1Index) {
+                case 0: player = new AlexFighter(p1StartX, p1StartY); break;
+                case 1: player = new Nicolini(p1StartX, p1StartY); break;
+                case 2: player = new Boomer(p1StartX, p1StartY); break;
+                case 3: player = new Chester(p1StartX, p1StartY); break;
             }
-            levelLoseScreen.initialize();
+            player.setMap(map);
+            player.addListener(this);
+            prevP1AttacksEnabled = player.isAttacksEnabled();
+        } else if (playerNum == 2) {
+            int p2Index = CharacterChooseScreen2.player2CharacterIndex;
+            float p1StartY = map.getPlayerStartPosition().y;
+            float p2X = Math.max(0, map.getEndBoundX() - 500);
+            
+            switch (p2Index) {
+                case 0: player2 = new AlexFighter2(p2X, p1StartY); break;
+                case 1: player2 = new Nicolini2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
+                case 2: player2 = new Boomer2(p2X - 50, p1StartY); break;
+                case 3: player2 = new Chester2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
+            }
+            player2.setMap(map);
+            player2.addListener(this);
+            prevP2AttacksEnabled = player2.isAttacksEnabled();
         }
     }
 
