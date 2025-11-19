@@ -16,7 +16,8 @@ public class ProjectileAttack {
     private static int player2ProjectileType = 0;
     private static String[] projectileImages = {"PencilPixel.png", "BurritoPixel.png", "ComputerPixel.png"};
     private static String[] projectileNames = {"Pencil", "Burrito", "Computer"}; // Display names for UI
-    private static float[] projectileDamage = {1.0f, 1.0f, 1.0f};
+    private static float[] projectileDamage = {1.0f, 1.5f, 2.0f};
+    private static float[] projectileSpeed = {400f, 300f, 260f};
     private static boolean xKeyWasPressed = false; // For player 1
     private static boolean nKeyWasPressed = false; // For player 2
     // Audio for firing projectile (loaded once)
@@ -27,6 +28,8 @@ public class ProjectileAttack {
     private int width = 27;
     private int height = 27;
     private float damage; // Changed to float to support fractional damage
+    private float damagePerSecond = 5.0f; // Damage-over-time rate
+    private int dotDurationMs = 0; // Duration of DOT effect in milliseconds
     private int lifeMs;
     private int ageMs = 0;
     private boolean alive = true;
@@ -57,12 +60,9 @@ public class ProjectileAttack {
         }
         
         this.projectileImage = ImageLoader.load(projectileImages[projectileType]);
-        // Chesters attack change
-        if (fromPlayer) {
-            this.damage = damage;
-        } else {
-            this.damage = projectileDamage[projectileType];
-        }
+        // Use projectile type damage for both player and enemy projectiles
+        this.damage = projectileDamage[projectileType];
+        
         // play firing sound when projectile is used
         try {
             if (fromPlayer && projectileSound != null) projectileSound.play();
@@ -133,6 +133,10 @@ public class ProjectileAttack {
         return projectileDamage[player1ProjectileType];
     }
     
+    public static float getPlayer1ProjectileSpeed() {
+        return projectileSpeed[player1ProjectileType];
+    }
+    
     public static String getPlayer2ProjectileImage() {
         return projectileImages[player2ProjectileType];
     }
@@ -143,6 +147,10 @@ public class ProjectileAttack {
     
     public static float getPlayer2ProjectileDamage() {
         return projectileDamage[player2ProjectileType];
+    }
+    
+    public static float getPlayer2ProjectileSpeed() {
+        return projectileSpeed[player2ProjectileType];
     }
     
     public void update(int dtMs, Map map, Player player, Level.Player2 player2) {
@@ -259,4 +267,7 @@ public class ProjectileAttack {
         }
     }
     public boolean isAlive() {return alive; }
+    
+    public float getDamagePerSecond() { return damagePerSecond; }
+    public int getDotDurationMs() { return dotDurationMs; }
 }

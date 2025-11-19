@@ -210,7 +210,7 @@ public abstract class Player extends GameObject {
                 keyLocker.lockKey(ATTACK_KEY);
                 // projectile parameters
                 int projW = 8; int projH = 8;
-                float speed = 240f;
+                float speed = ProjectileAttack.getPlayer1ProjectileSpeed();
                 float vx = facingDirection == Direction.RIGHT ? speed : -speed;
                 float spawnX = facingDirection == Direction.RIGHT ? this.getX() + this.getWidth() + 4f : this.getX() - projW - 4f;
                 float spawnY = this.getY() + (this.getHeight() / 2f) - (projH / 2f);
@@ -554,7 +554,8 @@ public abstract class Player extends GameObject {
         health += amount;
         if (health > maxHealth) health = maxHealth;
     }
-
+    
+    // Apply damage-over-time effect (used for burrito poison)
     public int getHealth() { return health; }
     public int getMaxHealth() { return maxHealth; }
 
