@@ -80,8 +80,8 @@ public class CharacterChooseScreen2 extends Screen {
        characterImages = new BufferedImage[characters.length];
 
     // For now, just add one sprite (Alex)
-    SpriteSheet alexSheet = new SpriteSheet(ImageLoader.load("alexsprite5.png"), 24, 24);
-    characterImages[0] = alexSheet.getSprite(0, 0);
+    SpriteSheet alexSheet = new SpriteSheet(ImageLoader.load("alexupdated67.png"), 24, 24);
+    characterImages[0] = alexSheet.getSprite(6, 0);
 
     SpriteSheet BoomerSheet = new SpriteSheet(ImageLoader.load("boomersprite1.png"), 24, 24);
     characterImages[2] = BoomerSheet.getSprite(0, 0);
