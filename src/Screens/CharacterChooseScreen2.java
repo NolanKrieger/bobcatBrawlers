@@ -32,7 +32,14 @@ public class CharacterChooseScreen2 extends Screen {
 
    String[] characters = {"Alex", "Prof. Nicolini", "Boomer", "Chester", "Marie", "Judy"};
 
-
+   String[] characterDescriptions = {
+    "Fast & Agile", // Alex
+    "Shield", // Prof. Nicolini
+    "Double Jump", // Boomer
+    "Tank + High Damage", // Chester
+    "", // Marie
+    "" // Judy
+};
 
 
    Color[] colors={
@@ -181,6 +188,20 @@ if (!keyLocker.isKeyLocked(Key.SPACE) && Keyboard.isKeyDown(Key.SPACE)) {
             graphicsHandler.drawImage(characterImages[i], spriteX, spriteY, spriteWidth, spriteHeight);
         }
     
+        if (i < characterDescriptions.length && characterDescriptions[i] != null) {
+            SpriteFont descriptionLabel = new SpriteFont(
+                characterDescriptions[i], 
+                x + slotWidth / 2 - (characterDescriptions[i].length() * 3), 
+                screenHeight - 200, 
+                "Arial", 
+                14, 
+                Color.CYAN 
+            );
+            descriptionLabel.setOutlineColor(Color.BLACK);
+            descriptionLabel.setOutlineThickness(2);
+            descriptionLabel.draw(graphicsHandler);
+        }
+
         // Draw name label
         SpriteFont nameLabel = new SpriteFont(characters[i], x + slotWidth / 2 - (characters[i].length() * 4), screenHeight - 60, "Arial", 18, Color.WHITE);
         nameLabel.setOutlineColor(Color.BLACK);
