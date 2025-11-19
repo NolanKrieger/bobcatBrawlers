@@ -2,6 +2,7 @@
 package Players;
 import Engine.Keyboard;
 import Engine.Key;
+import Utils.Direction;
 
 import Builders.FrameBuilder;
 import Engine.GraphicsHandler;
@@ -60,7 +61,14 @@ public class Nicolini extends Player {
                 super.draw(graphicsHandler);
                 // shield for Nicolini
                 if (shieldActive && shieldImage != null) {
-                        int shieldX = Math.round(getX() - map.getCamera().getX() + getWidth());
+                        int shieldX;
+                        if (getFacingDirection() == Direction.LEFT) {
+                                // Shield should be on the left when facing left
+                                shieldX = Math.round(getX() - map.getCamera().getX() - getWidth());
+                        } else {
+                                // Shield should be on the right when facing right
+                                shieldX = Math.round(getX() - map.getCamera().getX() + getWidth());
+                        }
                         int shieldY = Math.round(getY() - map.getCamera().getY());
                         graphicsHandler.drawImage(shieldImage, shieldX, shieldY, getWidth(), getHeight());
                 }
