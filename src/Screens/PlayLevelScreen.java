@@ -551,6 +551,22 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
             System.out.println("Failed to play respawn sound: " + e.getMessage());
         }
         
+        // Decrement the player's lives
+        Game.Lives lives = LevelLoseScreen.getLives();
+        if (playerNum == 1) {
+            lives.losePlayer1Life();
+        } else if (playerNum == 2) {
+            lives.losePlayer2Life();
+        }
+        
+        // Check if either player is out of lives and transition if so
+        if (lives.getPlayer1Lives() <= 0 || lives.getPlayer2Lives() <= 0) {
+            playLevelScreenState = PlayLevelScreenState.LEVEL_LOSE;
+            stopMusic();
+            levelLoseScreen.initialize();
+            return;
+        }
+        
         if (playerNum == 1) {
             int p1Index = CharacterChooseScreen2.player1CharacterIndex;
             float p1StartX = map.getPlayerStartPosition().x;
