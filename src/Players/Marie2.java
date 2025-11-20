@@ -16,10 +16,10 @@ public class Marie2 extends Player2 {
 
     public Marie2(float x, float y) {
         super(new SpriteSheet(ImageLoader.load("marie67sprite.png"), 24, 24), x, y, "STAND_RIGHT");
-        gravity = 1.0f;
+        gravity = 0.6f;
         terminalVelocityY = 8f;
-        jumpHeight = 13f;
-        jumpDegrade = .5f;
+        jumpHeight = 14f;
+        jumpDegrade = .2f;
         walkSpeed = 5.0f;
         momentumYIncrease = .5f;
         }
