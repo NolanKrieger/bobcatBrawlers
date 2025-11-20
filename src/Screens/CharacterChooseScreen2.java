@@ -37,8 +37,8 @@ public class CharacterChooseScreen2 extends Screen {
     "Shield", // Prof. Nicolini
     "Double Jump", // Boomer
     "Tank + High Damage", // Chester
-    "", // Marie
-    "" // Judy
+    "Low Gravity", // Marie
+    "Balanced" // Judy
 };
 
 
