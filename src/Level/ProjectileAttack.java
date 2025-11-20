@@ -25,7 +25,7 @@ public class ProjectileAttack {
     private static String[] projectileImages = {"PencilPixel.png", "BurritoPixel.png", "ComputerPixel.png"};
     private static String[] projectileNames = {"Pencil", "Burrito", "Computer"}; // Display names for UI
     private static float[] projectileDamage = {1.0f, 1.5f, 2.0f};
-    private static float[] projectileSpeed = {400f, 300f, 260f};
+    private static float[] projectileSpeed = {420f, 300f, 250f};
     private static boolean xKeyWasPressed = false; // For player 1
     private static boolean nKeyWasPressed = false; // For player 2
     // Audio for firing projectile (loaded once)

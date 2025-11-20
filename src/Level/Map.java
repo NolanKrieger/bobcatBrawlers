@@ -433,6 +433,10 @@ public abstract class Map {
         camera.draw(graphicsHandler);
     }
     
+    public void drawTreeTopLeavesTiles(GraphicsHandler graphicsHandler) {
+        camera.drawTreeTopLeavesTiles(graphicsHandler);
+    }
+    
     public void drawProjectiles(GraphicsHandler graphicsHandler) {
         // draw active projectiles and melee hitboxes (debug visuals)
         for (ProjectileAttack p : projectileAttacks) {

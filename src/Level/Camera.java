@@ -164,10 +164,25 @@ public class Camera extends Rectangle {
     // so this does not include the extra range granted by the UPDATE_OFF_SCREEN_RANGE value
     public void drawMapTiles(GraphicsHandler graphicsHandler) {
         Point tileIndex = getTileIndexByCameraPosition();
+        int mapHeight = map.getHeight();
         for (int i = tileIndex.y - 1; i <= tileIndex.y + height + 1; i++) {
             for (int j = tileIndex.x - 1; j <= tileIndex.x + width + 1; j++) {
                 MapTile tile = map.getMapTile(j, i);
-                if (tile != null) {
+                if (tile != null && i != mapHeight - 1) { // skip tiles on the bottom row
+                    tile.draw(graphicsHandler);
+                }
+            }
+        }
+    }
+    
+    // draws only bottom row tiles (drawn after background)
+    public void drawTreeTopLeavesTiles(GraphicsHandler graphicsHandler) {
+        Point tileIndex = getTileIndexByCameraPosition();
+        int mapHeight = map.getHeight();
+        for (int i = tileIndex.y - 1; i <= tileIndex.y + height + 1; i++) {
+            for (int j = tileIndex.x - 1; j <= tileIndex.x + width + 1; j++) {
+                MapTile tile = map.getMapTile(j, i);
+                if (tile != null && i == mapHeight - 1) { // only draw bottom row tiles
                     tile.draw(graphicsHandler);
                 }
             }

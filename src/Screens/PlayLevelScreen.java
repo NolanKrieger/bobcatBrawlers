@@ -356,7 +356,10 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
                     graphicsHandler.drawImage(bgImage, 0, 0, w, h);
                 }
                 
-                // Draw projectiles over the background image
+                // Draw tree top leaves tiles over background
+                map.drawTreeTopLeavesTiles(graphicsHandler);
+                
+                // Draw projectiles over the background image and tree leaves
                 map.drawProjectiles(graphicsHandler);
 
                 // --- Player 1 ---
