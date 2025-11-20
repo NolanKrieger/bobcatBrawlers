@@ -144,13 +144,12 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         
         switch (p2Index) {
             // place player2 on the opposite side of the level (right side)
-            case 0: player2 = new AlexFighter2(p2X, p1StartY); break;
-            case 1: player2 = new Nicolini2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break; // replace later with Nicolini2 etc.
+            case 0: player2 = new AlexFighter2(p2X - 50, p1StartY); break;
+            case 1: player2 = new Nicolini2(p2X - 50, p1StartY); break;
             case 2: player2 = new Boomer2(p2X - 50, p1StartY); break;
-            case 3: player2 = new Chester2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
-           case 4: player2 = new Marie2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
-            case 5: player2 = new Judy2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
-        //    default: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
+            case 3: player2 = new Chester2(p2X - 50, p1StartY); break;
+            case 4: player2 = new Marie2(p2X - 50, p1StartY); break;
+            case 5: player2 = new Judy2(p2X - 50, p1StartY); break;
         }
         player2.setMap(map);
         player2.addListener(this);
@@ -347,6 +346,20 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
         switch (playLevelScreenState) {
             case RUNNING:
                 map.draw(graphicsHandler);
+                
+                // Draw background image (over map tiles, under players/projectiles)
+                BufferedImage bgImage = map.getBackgroundImage();
+                if (bgImage != null) {
+                    int w = ScreenManager.getScreenWidth();
+                    int h = ScreenManager.getScreenHeight();
+                    graphicsHandler.drawImage(bgImage, 0, 0, w, h);
+                }
+                
+                // Draw tree top leaves tiles over background
+                map.drawTreeTopLeavesTiles(graphicsHandler);
+                
+                // Draw projectiles over the background image and tree leaves
+                map.drawProjectiles(graphicsHandler);
 
                 // --- Player 1 ---
                 player.draw(graphicsHandler);
@@ -494,7 +507,6 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
 
                 // Draw power-up selection boxes
                 drawPowerUpSelectionUI(graphicsHandler);
-                
 
                 break;
 
@@ -522,17 +534,70 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
 
     @Override
     public void onDeath() {
-        if (playLevelScreenState != PlayLevelScreenState.LEVEL_LOSE) {
+        // Check which player died and respawn just that player
+        if (player != null && player.getHealth() == 0) {
+            respawnPlayer(1);
+        } else if (player2 != null && player2.getHealth() == 0) {
+            respawnPlayer(2);
+        }
+    }
+    
+    private void respawnPlayer(int playerNum) {
+        try {
+            loseSoundPlayer = new AudioPlayer("Resources/Sounds/Death.wav");
+            loseSoundPlayer.play();
+        } catch (Exception e) {
+            System.out.println("Failed to play respawn sound: " + e.getMessage());
+        }
+        
+        // Decrement the player's lives
+        Game.Lives lives = LevelLoseScreen.getLives();
+        if (playerNum == 1) {
+            lives.losePlayer1Life();
+        } else if (playerNum == 2) {
+            lives.losePlayer2Life();
+        }
+        
+        // Check if either player is out of lives and transition if so
+        if (lives.getPlayer1Lives() <= 0 || lives.getPlayer2Lives() <= 0) {
             playLevelScreenState = PlayLevelScreenState.LEVEL_LOSE;
-            // stop level background music and play death sound
             stopMusic();
-            try {
-                loseSoundPlayer = new AudioPlayer("Resources/Sounds/Death.wav");
-                loseSoundPlayer.play();
-            } catch (Exception e) {
-                System.out.println("Failed to play lose sound: " + e.getMessage());
-            }
             levelLoseScreen.initialize();
+            return;
+        }
+        
+        if (playerNum == 1) {
+            int p1Index = CharacterChooseScreen2.player1CharacterIndex;
+            float p1StartX = map.getPlayerStartPosition().x;
+            float p1StartY = map.getPlayerStartPosition().y;
+            
+            switch (p1Index) {
+                case 0: player = new AlexFighter(p1StartX, p1StartY); break;
+                case 1: player = new Nicolini(p1StartX, p1StartY); break;
+                case 2: player = new Boomer(p1StartX, p1StartY); break;
+                case 3: player = new Chester(p1StartX, p1StartY); break;
+                case 4: player = new Marie(p1StartX, p1StartY); break;
+                case 5: player = new Judy(p1StartX, p1StartY); break;
+            }
+            player.setMap(map);
+            player.addListener(this);
+            prevP1AttacksEnabled = player.isAttacksEnabled();
+        } else if (playerNum == 2) {
+            int p2Index = CharacterChooseScreen2.player2CharacterIndex;
+            float p1StartY = map.getPlayerStartPosition().y;
+            float p2X = Math.max(0, map.getEndBoundX() - 500);
+            
+            switch (p2Index) {
+                case 0: player2 = new AlexFighter2(p2X - 50, p1StartY); break;
+                case 1: player2 = new Nicolini2(p2X - 50, p1StartY); break;
+                case 2: player2 = new Boomer2(p2X - 50, p1StartY); break;
+                case 3: player2 = new Chester2(p2X - 50, p1StartY); break;
+                case 4: player2 = new Marie2(p2X - 50, p1StartY); break;
+                case 5: player2 = new Judy2(p2X - 50, p1StartY); break;
+            }
+            player2.setMap(map);
+            player2.addListener(this);
+            prevP2AttacksEnabled = player2.isAttacksEnabled();
         }
     }
 

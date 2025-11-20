@@ -181,6 +181,21 @@ public class Judy extends Player {
                             .withBounds(8, 9, 10, 10)
                             .build()
             });
+
+            put("SWIM_STAND_RIGHT", new Frame[] {
+                    new FrameBuilder(spriteSheet.getSprite(0, 0))
+                            .withScale(5)
+                            .withBounds(8, 9, 10, 10)
+                            .build()
+            });
+
+            put("SWIM_STAND_LEFT", new Frame[] {
+                    new FrameBuilder(spriteSheet.getSprite(0, 0))
+                            .withScale(5)
+                            .withImageEffect(ImageEffect.FLIP_HORIZONTAL)
+                            .withBounds(8, 9, 10, 10)
+                            .build()
+            });
         }};
     }
 }
