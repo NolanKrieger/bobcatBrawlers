@@ -7,6 +7,7 @@ import GameObject.Frame;
 import GameObject.ImageEffect;
 import GameObject.SpriteSheet;
 import Level.Player2;
+import Utils.Direction;
 
 import java.util.HashMap;
 
@@ -60,7 +61,14 @@ public class Nicolini2 extends Player2 {
                 super.draw(graphicsHandler);
                 // shield for Nicolini2
                 if (shieldActive && shieldImage != null) {
-                        int shieldX = Math.round(getX() - map.getCamera().getX() - getWidth());
+                        int shieldX;
+                        if (getFacingDirection() == Direction.LEFT) {
+                                // Shield should be on the left when facing left
+                                shieldX = Math.round(getX() - map.getCamera().getX() - getWidth());
+                        } else {
+                                // Shield should be on the right when facing right
+                                shieldX = Math.round(getX() - map.getCamera().getX() + getWidth());
+                        }
                         int shieldY = Math.round(getY() - map.getCamera().getY());
                         graphicsHandler.drawImage(shieldImage, shieldX, shieldY, getWidth(), getHeight());
                 }
