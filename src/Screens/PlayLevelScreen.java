@@ -135,8 +135,8 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
            case 1: player = new Nicolini(p1StartX, p1StartY); break; // replace later with Nicolini
           case 2: player = new Boomer(p1StartX, p1StartY); break;
             case 3: player = new Chester(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
-         //   case 4: player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
-//case 5: player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
+            case 4: player = new Marie(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
+        case 5: player = new Judy(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
          //   default: player = new Alex(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y); break;
         }
         player.setMap(map);
@@ -148,8 +148,8 @@ public class PlayLevelScreen extends Screen implements PlayerListener {
             case 1: player2 = new Nicolini2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break; // replace later with Nicolini2 etc.
             case 2: player2 = new Boomer2(p2X - 50, p1StartY); break;
             case 3: player2 = new Chester2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
-       //    case 4: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
-       //     case 5: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
+           case 4: player2 = new Marie2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
+            case 5: player2 = new Judy2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
         //    default: player2 = new Cat2(map.getPlayerStartPosition().x - 50, map.getPlayerStartPosition().y); break;
         }
         player2.setMap(map);

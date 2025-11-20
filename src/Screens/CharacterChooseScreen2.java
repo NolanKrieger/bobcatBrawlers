@@ -37,8 +37,8 @@ public class CharacterChooseScreen2 extends Screen {
     "Shield", // Prof. Nicolini
     "Double Jump", // Boomer
     "Tank + High Damage", // Chester
-    "", // Marie
-    "" // Judy
+    "Low Gravity", // Marie
+    "Balanced" // Judy
 };
 
 
@@ -92,11 +92,11 @@ public class CharacterChooseScreen2 extends Screen {
     SpriteSheet NicoliniSheet = new SpriteSheet(ImageLoader.load("nicolinisprite.png"), 24, 24);
     characterImages[1] = NicoliniSheet.getSprite(0, 0);
    
-  //  SpriteSheet MarieSheet = new SpriteSheet(ImageLoader.load("boomersprite1.png"), 24, 24);
-   // characterImages[4] = MarieSheet.getSprite(0, 0);
+    SpriteSheet MarieSheet = new SpriteSheet(ImageLoader.load("marie67sprite.png"), 24, 24);
+    characterImages[4] = MarieSheet.getSprite(0, 0);
    
-    //SpriteSheet JudySheet = new SpriteSheet(ImageLoader.load("alexsprite5.png"), 24, 24);
-    //characterImages[5] = "JudySheet"Sheet.getSprite(0, 0);
+    SpriteSheet JudySheet = new SpriteSheet(ImageLoader.load("judy67sprite.png"), 24, 24);
+    characterImages[5] =JudySheet.getSprite(0, 0);
 
    }
 
