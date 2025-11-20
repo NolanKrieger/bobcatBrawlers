@@ -1,16 +1,7 @@
 package Maps;
 
-// import Enemies.BugEnemy;
-// import Enemies.DinosaurEnemy;
-import Engine.ImageLoader;
-import EnhancedMapTiles.EndLevelBox;
-import EnhancedMapTiles.HorizontalMovingPlatform;
-import GameObject.Rectangle;
 import Level.*;
-// import NPCs.Walrus;
-import Tilesets.NewCommonTileset;
-
-import Utils.Direction;
+import Tilesets.BobcatTileset;
 
 import java.util.ArrayList;
 
@@ -18,7 +9,8 @@ import java.util.ArrayList;
 public class BobcatMap extends Map {
 
     public BobcatMap() {
-        super("bobcat_map.txt", new NewCommonTileset());
+        // Use BobcatTileset with scale 2 to show more of the map
+        super("bobcat_map.txt", new BobcatTileset());
         this.playerStartPosition = getMapTile(6, 4).getLocation();
     }
 

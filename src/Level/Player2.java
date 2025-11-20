@@ -44,7 +44,7 @@ public abstract class Player2 extends GameObject {
     protected LevelState levelState;
 
     protected float dashSpeed = 20.0f;
-    protected int dashDuration = 200;
+    protected int dashDuration = 125;
     protected int dashCooldown = 500;
     protected int dashTimer = 0;
     protected int dashCooldownTimer = 2;
